@@ -168,6 +168,9 @@ class DevicesBrands(models.Model):
         managed = False
         db_table = 'devices_brands'
 
+    def __str__(self):
+        return self.name
+
 
 class DevicesCommands(models.Model):
     command = models.CharField(max_length=20, blank=True, null=True)
@@ -183,6 +186,9 @@ class DevicesVendor(models.Model):
     class Meta:
         managed = False
         db_table = 'devices_vendor'
+
+    def __str__(self):
+        return self.vendor_name
 
 
 class GlobalLogging(models.Model):
