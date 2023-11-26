@@ -85,6 +85,7 @@ class LoginUsersAdmin(admin.ModelAdmin):
                 )
             })
     )
+    raw_id_fields = ('contragent',)
 
 class CaObjectsAdmin(admin.ModelAdmin):
     list_display = (
@@ -223,6 +224,9 @@ class SimCardsAdmin(admin.ModelAdmin):
                 )
             })
     )
+    raw_id_fields = (
+        'contragent',
+    )
 
 class DevicesAdmin(admin.ModelAdmin):
     list_display = (
@@ -276,10 +280,11 @@ class DevicesAdmin(admin.ModelAdmin):
                     'devices_brand',
                     'name_it',
                     'sys_mon',
-                    'contragent',
+                    'contragent__ca_id',
                 )
             })
     )
+    raw_id_fields = ['contragent']
 
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)
