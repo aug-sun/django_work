@@ -7,16 +7,20 @@ class ContragentsAdmin(admin.ModelAdmin):
             "ca_name", 
             "ca_shortname",
             "ca_inn",
-            "ca_kpp",           
+            "ca_kpp",
+            "ca_field_of_activity",
             )
     list_filter = (
             "ca_name",
             "ca_inn",
+            "ca_kpp",
+            "ca_field_of_activity",
             )
     search_fields = (
             "ca_name",
             "ca_inn",
-            "ca_kpp",       
+            "ca_kpp",
+            "ca_field_of_activity",
             )
 
     fieldsets = (
@@ -26,10 +30,12 @@ class ContragentsAdmin(admin.ModelAdmin):
                     'ca_shortname',
                     'ca_inn',
                     'ca_kpp',
+                    'ca_field_of_activity',
                 )
             }),
         
         )
+    list_per_page = 20
 
 class LoginUsersAdmin(admin.ModelAdmin):
     list_display = (
@@ -45,14 +51,14 @@ class LoginUsersAdmin(admin.ModelAdmin):
 
     list_filter = (
             "system",
-            "contragent",
-            "contragent",
+            "date_create",
+
             )
     search_fields = (
             "client_name",
             "login",
             "comment_field",
-            "contragent__ca_id",
+            "contragent__ca_name",
     )
 
     fieldsets = (
@@ -86,6 +92,7 @@ class LoginUsersAdmin(admin.ModelAdmin):
             })
     )
     raw_id_fields = ('contragent',)
+    list_per_page = 20
 
 class CaObjectsAdmin(admin.ModelAdmin):
     list_display = (
@@ -102,12 +109,11 @@ class CaObjectsAdmin(admin.ModelAdmin):
             "object_status",
             "sys_mon",
 #            "contragent",
-#            "object_status",
 #            "contragent",
             )
     search_fields = (
             "object_name",
-            "contragent__ca_id",
+            "contragent__ca_name",
 #            "object_status__status_id",
             "owner_user",
             "owner_contragent",
@@ -123,9 +129,13 @@ class CaObjectsAdmin(admin.ModelAdmin):
                     'owner_contragent',
                     'owner_user',
                     'contragent',
+                    'imei',
+
                 )
             }),
     )
+    list_per_page = 20
+
 
 class GlobalLogAdmin(admin.ModelAdmin):
     list_display = (
@@ -143,6 +153,7 @@ class GlobalLogAdmin(admin.ModelAdmin):
             "section_type",
             "edit_id",
             "field",
+            "change_time",
             )
     search_fields = (
             "section_type",
@@ -168,12 +179,13 @@ class GlobalLogAdmin(admin.ModelAdmin):
                 )
             }),
     )
+    list_per_page = 20
 
 class SimCardsAdmin(admin.ModelAdmin):
     list_display = (
             "sim_iccid",
             "sim_tel_number",
-            "client_name",
+#            "client_name",
             "sim_cell_operator",
             "sim_owner",
             "sim_date",
@@ -195,10 +207,10 @@ class SimCardsAdmin(admin.ModelAdmin):
             "sim_iccid",
             "sim_tel_number",
             "client_name",
-            "sim_cell_operator__id",
+            "sim_cell_operator__name",
             "sim_owner",
             "sim_date",
-            "contragent__ca_id",
+            "contragent__ca_name",
             "terminal_imei",
             )
     fieldsets = (
@@ -222,7 +234,7 @@ class SimCardsAdmin(admin.ModelAdmin):
                 'fields': (
                     'sim_iccid',
                     'sim_tel_number',
-                    'client_name',
+#                    'client_name',
                     'sim_cell_operator',
                     'sim_owner',
                     'sim_date',
@@ -236,6 +248,7 @@ class SimCardsAdmin(admin.ModelAdmin):
     raw_id_fields = (
         'contragent',
     )
+    list_per_page = 20
 
 class DevicesAdmin(admin.ModelAdmin):
     list_display = (
@@ -244,7 +257,6 @@ class DevicesAdmin(admin.ModelAdmin):
             "client_name",
             "terminal_date",
             "devices_brand",
-            "name_it",
             "sys_mon",
             "contragent",
             'itprogrammer',
@@ -261,13 +273,15 @@ class DevicesAdmin(admin.ModelAdmin):
             "device_imei",
             "client_name",
             "name_it",
+            "contragent__ca_name",
+
     )
     fieldsets = (
             (None, {
                 'fields': (
                     'device_serial',
                     'device_imei',
-                    'client_name',
+#                    'client_name',
                     'terminal_date',
                     'devices_brand',
 #                    'name_it',
@@ -292,8 +306,10 @@ class DevicesAdmin(admin.ModelAdmin):
                     'itprogrammer',
                 )
             })
+
     )
     raw_id_fields = ['contragent']
+    list_per_page = 20
 
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)

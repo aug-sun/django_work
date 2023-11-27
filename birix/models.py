@@ -16,6 +16,8 @@ class CellOperator(models.Model):
     class Meta:
         managed = False
         db_table = 'Cell_operator'
+        verbose_name = 'Сотовый оператор'
+        verbose_name_plural = 'Сотовые операторы'
 
     def __str__(self):
         return self.name
@@ -43,6 +45,8 @@ class Contragents(models.Model):
     class Meta:
         managed = False
         db_table = 'Contragents'
+        verbose_name = 'Контрагент'
+        verbose_name_plural = 'Контрагенты'
 
     def __str__(self):
         return self.ca_name
@@ -61,6 +65,8 @@ class LoginUsers(models.Model):
     class Meta:
         managed = False
         db_table = 'Login_users'
+        verbose_name = 'Логин пользователя'
+        verbose_name_plural = 'Логины пользователей'
 
     def __str__(self):
         return self.login
@@ -71,6 +77,8 @@ class AuthGroup(models.Model):
     class Meta:
         managed = False
         db_table = 'auth_group'
+        verbose_name = 'Группа'
+        verbose_name_plural = 'Группы'
 
 
 class AuthGroupPermissions(models.Model):
@@ -110,6 +118,8 @@ class AuthUser(models.Model):
     class Meta:
         managed = False
         db_table = 'auth_user'
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
 
     def __str__(self):
         return self.username
@@ -169,25 +179,67 @@ class CaContracts(models.Model):
 
 
 class CaObjects(models.Model):
-    sys_mon = models.ForeignKey('MonitoringSystem', models.DO_NOTHING, blank=True, null=True, db_comment='ID системы мониторинга')
+    sys_mon = models.ForeignKey(
+            'MonitoringSystem', 
+            models.DO_NOTHING, 
+            blank=True,
+            null=True,
+            db_comment='ID системы мониторинга',
+            verbose_name='Система мониторинга',
+            )
     sys_mon_object_id = models.CharField(max_length=50, blank=True, null=True, db_comment='ID объекта в системе мониторинга')
-    object_name = models.CharField(max_length=70, blank=True, null=True, db_comment='Название объекта')
-    object_status = models.ForeignKey('ObjectStatuses', models.DO_NOTHING, db_column='object_status', blank=True, null=True, db_comment='Статус объекта ссылается к статусам')
+    object_name = models.CharField(
+            max_length=70,
+            blank=True,
+            null=True,
+            db_comment='Название объекта',
+            verbose_name='Название объекта',
+            )
+    object_status = models.ForeignKey(
+            'ObjectStatuses',
+            models.DO_NOTHING, 
+            db_column='object_status',
+            blank=True,
+            null=True,
+            db_comment='Статус объекта ссылается к статусам',
+            verbose_name='Статус объекта',
+            )
     object_add_date = models.DateTimeField(blank=True, null=True, db_comment='Дата добавления объекта')
     object_last_message = models.DateTimeField(blank=True, null=True, db_comment='Дата последнего сообщения')
     object_margin = models.IntegerField(blank=True, null=True, db_comment='Надбавка к базовой цене объекта')
-    owner_contragent = models.CharField(max_length=200, blank=True, null=True, db_comment='Хозяин контрагент')
-    owner_user = models.CharField(max_length=255, blank=True, null=True, db_comment='Хозяин юзер')
+    owner_contragent = models.CharField(
+            max_length=200, 
+            blank=True, 
+            null=True, 
+            db_comment='Хозяин контрагент',
+            verbose_name='Контрагент в системе мониторинга',
+            )
+    owner_user = models.CharField(
+            max_length=255,
+            blank=True, 
+            null=True, 
+            db_comment='Хозяин юзер',
+            verbose_name='Логин юзера в системе мониторинга',
+            )
     imei = models.CharField(max_length=100, blank=True, null=True, db_comment='идентификатор терминала')
     updated = models.DateTimeField(blank=True, null=True, db_comment='Когда изменён')
     object_created = models.DateTimeField(blank=True, null=True, db_comment='Дата создания в системе мониторинга ')
     parent_id_sys = models.CharField(max_length=200, blank=True, null=True, db_comment='Id клиента в системе мониторинга')
-    contragent = models.ForeignKey(Contragents, models.DO_NOTHING, blank=True, null=True)
+    contragent = models.ForeignKey(
+            Contragents, 
+            models.DO_NOTHING, 
+            blank=True, 
+            null=True,
+            verbose_name='Контрагент как в 1С',
+            )
     ca_uid = models.CharField(max_length=100, blank=True, null=True, db_comment='Уникальный id контрагента')
 
     class Meta:
         managed = False
         db_table = 'ca_objects'
+        verbose_name = 'Объект'
+        verbose_name_plural = 'Объекты'
+
 
     def __str__(self):
         return self.object_name
@@ -206,20 +258,83 @@ class ClientsInSystemMonitor(models.Model):
 
 class Devices(models.Model):
     device_id = models.AutoField(primary_key=True)
-    device_serial = models.CharField(max_length=100, blank=True, null=True, db_comment='Серийный номер устройства')
-    device_imei = models.CharField(max_length=60, blank=True, null=True, db_comment='IMEI устройства')
-    client_name = models.CharField(max_length=300, blank=True, null=True, db_comment='Имя клиента')
-    terminal_date = models.DateTimeField(blank=True, null=True, db_comment='Дата программирования терминала')
-    devices_brand = models.ForeignKey('DevicesBrands', models.DO_NOTHING, blank=True, null=True, db_comment='ID Модели устройства ')
-    name_it = models.CharField(max_length=50, blank=True, null=True, db_comment='Имя програмировавшего терминал')
-    sys_mon = models.ForeignKey('MonitoringSystem', models.DO_NOTHING, blank=True, null=True, db_comment='ID системы мониторинга')
-    contragent = models.ForeignKey(Contragents, models.DO_NOTHING, blank=True, null=True, db_comment='ID контрагента')
-    coment = models.CharField(max_length=270, blank=True, null=True, db_comment='Коментарии')
-    itprogrammer = models.ForeignKey(AuthUser, models.DO_NOTHING, blank=True, null=True)
+    device_serial = models.CharField(
+            max_length=100, blank=True, 
+            null=True, 
+            db_comment='Серийный номер устройства',
+            verbose_name='Серийный номер устройства')
+    device_imei = models.CharField(
+            max_length=60, 
+            blank=True,
+            null=True, 
+            db_comment='IMEI устройства',
+            verbose_name='IMEI устройства'
+            )
+    client_name = models.CharField(
+            max_length=300,
+            blank=True,
+            null=True,
+            db_comment='Имя клиента',
+            verbose_name='Имя клиента'
+            )
+    terminal_date = models.DateTimeField(
+            blank=True,
+            null=True, 
+            db_comment='Дата программирования терминала',
+            verbose_name='Дата программирования терминала',
+            )
+    devices_brand = models.ForeignKey(
+            'DevicesBrands', 
+            models.DO_NOTHING,
+            blank=True, 
+            null=True, 
+            db_comment='ID Модели устройства ',
+            verbose_name='Модель устройства '
+            )
+    name_it = models.CharField(
+            max_length=50, 
+            blank=True,
+            null=True, 
+            db_comment='Имя програмировавшего терминал',
+            verbose_name='Имя програмировавшего терминал',
+            )
+    sys_mon = models.ForeignKey(
+            'MonitoringSystem',
+            models.DO_NOTHING,
+            blank=True,
+            null=True, 
+            db_comment='ID системы мониторинга',
+            verbose_name='Система мониторинга',
+            )
+    contragent = models.ForeignKey(
+            Contragents, 
+            models.DO_NOTHING,
+            blank=True,
+            null=True, 
+            db_comment='ID контрагента',
+            verbose_name='Контрагент',
+            )
+    coment = models.CharField(
+            max_length=270,
+            blank=True,
+            null=True, 
+            db_comment='Коментарии',
+            verbose_name='Коментарии',
+            )
+    itprogrammer = models.ForeignKey(
+            AuthUser, 
+            models.DO_NOTHING, 
+            blank=True, 
+            null=True,
+            verbose_name='Программист',
+            )
 
     class Meta:
         managed = False
         db_table = 'devices'
+        verbose_name = 'Терминал'
+        verbose_name_plural = 'Терминалы'
+
 
     def __str__(self):
         return self.device_serial
@@ -231,6 +346,8 @@ class DevicesBrands(models.Model):
     class Meta:
         managed = False
         db_table = 'devices_brands'
+        verbose_name = 'Модель устройства'
+        verbose_name_plural = 'Модели устройств'
 
     def __str__(self):
         return self.name
@@ -303,14 +420,29 @@ class GlobalLogging(models.Model):
     edit_id = models.IntegerField()
     field = models.CharField(max_length=50)
     old_value = models.CharField(max_length=255, blank=True, null=True)
-    new_value = models.CharField(max_length=255, blank=True, null=True)
-    change_time = models.DateTimeField(blank=True, null=True)
-    sys_id = models.IntegerField(blank=True, null=True)
+    new_value = models.CharField(
+            max_length=255, 
+            blank=True,
+            null=True,
+            verbose_name='Новое значение',
+            )
+    change_time = models.DateTimeField(
+            blank=True, 
+            null=True,
+            verbose_name='Время изменения',
+            )
+    sys_id = models.IntegerField(
+            blank=True,
+            null=True,
+            verbose_name='ID системы',
+            )
     action = models.CharField(max_length=100, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'global_logging'
+        verbose_name = 'Лог изменений'
+        verbose_name_plural = 'Логи изменений'
 
     def __str__(self):
         return self.section_type
@@ -343,6 +475,8 @@ class MonitoringSystem(models.Model):
     class Meta:
         managed = False
         db_table = 'monitoring_system'
+        verbose_name = 'Система мониторинга'
+        verbose_name_plural = 'Системы мониторинга'
 
     def __str__(self):
         return self.mon_sys_name
@@ -384,6 +518,8 @@ class ObjectStatuses(models.Model):
     class Meta:
         managed = False
         db_table = 'object_statuses'
+        verbose_name = 'Статус'
+        verbose_name_plural = 'Статусы'
 
     def __str__(self):
         return self.status
@@ -408,22 +544,85 @@ class ObjectVehicles(models.Model):
 class SimCards(models.Model):
     sim_id = models.AutoField(primary_key=True)
     sim_iccid = models.CharField(max_length=40, blank=True, null=True, db_comment='ICCID')
-    sim_tel_number = models.CharField(max_length=40, blank=True, null=True, db_comment='телефонный номер сим')
-    client_name = models.CharField(max_length=270, blank=True, null=True, db_comment='Имя клиента')
-    sim_cell_operator = models.ForeignKey(CellOperator, models.DO_NOTHING, db_column='sim_cell_operator', blank=True, null=True, db_comment='Сотовый оператор(надо по ID)')
-    sim_owner = models.IntegerField(blank=True, null=True, db_comment='Владелец сим (мы или клиент)')
+    sim_tel_number = models.CharField(
+            max_length=40, 
+            blank=True, 
+            null=True, 
+            db_comment='телефонный номер сим',
+            verbose_name='Телефонный номер сим'
+            )
+    client_name = models.CharField(
+            max_length=270, 
+            blank=True,
+            null=True, 
+            db_comment='Имя клиента',
+            verbose_name='Имя клиента'
+            )
+    sim_cell_operator = models.ForeignKey(
+            CellOperator, 
+            models.DO_NOTHING,
+            db_column='sim_cell_operator',
+            blank=True,
+            null=True,
+            db_comment='Сотовый оператор(надо по ID)',
+            verbose_name='Сотовый оператор'
+            )
+    sim_owner = models.IntegerField(
+            blank=True,
+            null=True,
+            db_comment='Владелец сим (мы или клиент)',
+            verbose_name='Мы или клиент'
+            )
     sim_device = models.ForeignKey(Devices, models.DO_NOTHING, blank=True, null=True, db_comment='ID к девайсам(devices)')
-    sim_date = models.DateTimeField(blank=True, null=True, db_comment='Дата регистрации сим')
-    name_it = models.CharField(max_length=100, blank=True, null=True, db_comment='Имя активировавшего')
-    status = models.IntegerField(blank=True, null=True, db_comment='Активность симки')
-    terminal_imei = models.CharField(max_length=25, blank=True, null=True, db_comment='IMEI терминала в который вставлена симка')
-    contragent = models.ForeignKey(Contragents, models.DO_NOTHING, blank=True, null=True, db_comment='ID контрагента')
+    sim_date = models.DateTimeField(
+            blank=True, 
+            null=True, 
+            db_comment='Дата регистрации сим',
+            verbose_name='Дата регистрации сим',
+            )
+    name_it = models.CharField(
+            max_length=100,
+            blank=True, 
+            null=True,
+            db_comment='Имя активировавшего',
+            verbose_name='Имя активировавшего',
+            )
+    status = models.IntegerField(
+            blank=True,
+            null=True, 
+            db_comment='Активность симки',
+            verbose_name='Активность симки',
+            )
+    terminal_imei = models.CharField(
+            max_length=25, 
+            blank=True,
+            null=True,
+            db_comment='IMEI терминала в который вставлена симка',
+            verbose_name='IMEI терминала в котором симка',
+            )
+    contragent = models.ForeignKey(
+            Contragents, 
+            models.DO_NOTHING, 
+            blank=True,
+            null=True, 
+            db_comment='ID контрагента',
+            verbose_name='Контрагент в 1С',
+            )
     ca_uid = models.CharField(max_length=100, blank=True, null=True, db_comment='Уникальный id контрагента')
-    itprogrammer = models.ForeignKey(AuthUser, models.DO_NOTHING, blank=True, null=True, db_comment='ID сотрудника програмировавшего терминал')
+    itprogrammer = models.ForeignKey(
+            AuthUser, 
+            models.DO_NOTHING, 
+            blank=True,
+            null=True, 
+            db_comment='ID сотрудника програмировавшего терминал',
+            verbose_name='Сотрудник активировавший СИМ',
+            )
 
     class Meta:
         managed = False
         db_table = 'sim_cards'
+        verbose_name = 'Симкарта'
+        verbose_name_plural = 'Симкарты'
 
     def __str__(self):
         return self.sim_iccid
