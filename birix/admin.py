@@ -95,20 +95,23 @@ class CaObjectsAdmin(admin.ModelAdmin):
             "owner_contragent",
             "owner_user",
             "contragent",
+            "imei",
             )
 
     list_filter = (
             "object_status",
-            "contragent",
-            "object_status",
-            "contragent",
+            "sys_mon",
+#            "contragent",
+#            "object_status",
+#            "contragent",
             )
     search_fields = (
             "object_name",
             "contragent__ca_id",
-            "object_status__status_id",
+#            "object_status__status_id",
             "owner_user",
             "owner_contragent",
+            "imei",
     )
 
     fieldsets = (
@@ -176,13 +179,17 @@ class SimCardsAdmin(admin.ModelAdmin):
             "sim_date",
             "contragent",
             "terminal_imei",
+            'itprogrammer',
+
             )
 
     list_filter = (
             "sim_cell_operator",
             "sim_owner",
             "sim_date",
-            "contragent",
+#            "contragent",
+            'itprogrammer',
+
             )
     search_fields = (
             "sim_iccid",
@@ -199,12 +206,13 @@ class SimCardsAdmin(admin.ModelAdmin):
                 'fields': (
                     'sim_iccid',
                     'sim_tel_number',
-                    'client_name',
+#                    'client_name',
                     'sim_cell_operator',
                     'sim_owner',
                     'sim_date',
                     'contragent',
                     "terminal_imei",
+                    'itprogrammer',
                 )
             }),
     )
@@ -214,12 +222,13 @@ class SimCardsAdmin(admin.ModelAdmin):
                 'fields': (
                     'sim_iccid',
                     'sim_tel_number',
-                    'client_name',
+#                    'client_name',
                     'sim_cell_operator',
                     'sim_owner',
                     'sim_date',
                     'contragent',
                     "terminal_imei",
+                    'itprogrammer'
 
                 )
             })
@@ -238,22 +247,20 @@ class DevicesAdmin(admin.ModelAdmin):
             "name_it",
             "sys_mon",
             "contragent",
+            'itprogrammer',
             )
 
     list_filter = (
             "devices_brand",
-            "contragent",
+#            "contragent",
             "terminal_date",
+            'itprogrammer',
             )
     search_fields = (
             "device_serial",
             "device_imei",
             "client_name",
-            "terminal_date",
-            "devices_brand_id",
             "name_it",
-            "sys_mon__mon_sys_id",
-            "contragent__ca_id",
     )
     fieldsets = (
             (None, {
@@ -263,9 +270,10 @@ class DevicesAdmin(admin.ModelAdmin):
                     'client_name',
                     'terminal_date',
                     'devices_brand',
-                    'name_it',
+#                    'name_it',
                     'sys_mon',
                     'contragent',
+                    'itprogrammer',
                 )
             }),
     )
@@ -275,12 +283,13 @@ class DevicesAdmin(admin.ModelAdmin):
                 'fields': (
                     'device_serial',
                     'device_imei',
-                    'client_name',
+#                    'client_name',
                     'terminal_date',
                     'devices_brand',
-                    'name_it',
+#                    'name_it',
                     'sys_mon',
                     'contragent__ca_id',
+                    'itprogrammer',
                 )
             })
     )
