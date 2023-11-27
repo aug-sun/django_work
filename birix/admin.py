@@ -206,7 +206,7 @@ class SimCardsAdmin(admin.ModelAdmin):
                 'fields': (
                     'sim_iccid',
                     'sim_tel_number',
-#                    'client_name',
+                    'client_name',
                     'sim_cell_operator',
                     'sim_owner',
                     'sim_date',
@@ -222,7 +222,7 @@ class SimCardsAdmin(admin.ModelAdmin):
                 'fields': (
                     'sim_iccid',
                     'sim_tel_number',
-#                    'client_name',
+                    'client_name',
                     'sim_cell_operator',
                     'sim_owner',
                     'sim_date',
