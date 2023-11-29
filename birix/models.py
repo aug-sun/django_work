@@ -417,6 +417,21 @@ class DjangoSession(models.Model):
 
 
 class GlobalLogging(models.Model):
+    class SysChoices(models.IntegerChoices):
+        glonass = 1, "Glonasssoft"
+        fort = 2, "Fort monitor"
+        wialonhost = 3, "Wialon hosting"
+        wialonlocal = 4, "Wialon local"
+        era = 5, "Era"
+        scout = 6, "Scout"
+        null = 0, "В 1с"
+
+    class ActionChoices(models.TextChoices):
+        create = "add", "Создание"
+        update = "update", "Изменение"
+        delete = "delete", "Удаление"
+
+
     section_type = models.CharField(max_length=50)
     edit_id = models.IntegerField()
     field = models.CharField(max_length=50)
@@ -436,8 +451,9 @@ class GlobalLogging(models.Model):
             blank=True,
             null=True,
             verbose_name='ID системы',
+            choices=SysChoices.choices
             )
-    action = models.CharField(max_length=100, blank=True, null=True)
+    action = models.CharField(max_length=100, blank=True, null=True, choices=ActionChoices.choices)
 
     class Meta:
         managed = False
@@ -447,6 +463,32 @@ class GlobalLogging(models.Model):
 
     def __str__(self):
         return self.section_type
+
+    #если sys_id = 1 - система мониторинга
+    def get_sys_name(self):
+        if self.sys_id == 1:
+            return 'Глонасс'
+        if self.sys_id == 2:
+            return 'Форт'
+        if self.sys_id == 3:
+            return 'ВиалонХост'
+        if self.sys_id == 4:
+            return 'ВиалонЛокал'
+        if self.sys_id == 5:
+            return 'Эра'
+        if self.sys_id == 6:
+            return 'Скаут'
+        else:
+            return 'Изменения в 1С'
+
+    def get_action(self):
+        if self.action == 'update':
+            return 'Изменено'
+        if self.action == 'add':
+            return 'Добавлено'
+        if self.action == 'delete':
+            return 'Удалено'
+
 
 class GuaranteeTerms(models.Model):
     gt_id = models.AutoField(primary_key=True, db_comment='ID гарантийного срока')

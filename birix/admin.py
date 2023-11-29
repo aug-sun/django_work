@@ -151,6 +151,7 @@ class GlobalLogAdmin(admin.ModelAdmin):
 
     list_filter = (
             "section_type",
+            "sys_id",
             "field",
             "change_time",
             "action",
@@ -180,6 +181,8 @@ class GlobalLogAdmin(admin.ModelAdmin):
             }),
     )
     list_per_page = 20
+
+
 
 class SimCardsAdmin(admin.ModelAdmin):
     list_display = (
