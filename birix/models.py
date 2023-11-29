@@ -259,13 +259,14 @@ class ClientsInSystemMonitor(models.Model):
 class Devices(models.Model):
     device_id = models.AutoField(primary_key=True)
     device_serial = models.CharField(
-            max_length=100, blank=True, 
+            max_length=100,
+            blank=False, 
             null=True, 
             db_comment='Серийный номер устройства',
             verbose_name='Серийный номер устройства')
     device_imei = models.CharField(
             max_length=60, 
-            blank=True,
+            blank=False,
             null=True, 
             db_comment='IMEI устройства',
             verbose_name='IMEI устройства'
@@ -278,7 +279,7 @@ class Devices(models.Model):
             verbose_name='Имя клиента'
             )
     terminal_date = models.DateTimeField(
-            blank=True,
+            blank=False,
             null=True, 
             db_comment='Дата программирования терминала',
             verbose_name='Дата программирования терминала',
@@ -286,7 +287,7 @@ class Devices(models.Model):
     devices_brand = models.ForeignKey(
             'DevicesBrands', 
             models.DO_NOTHING,
-            blank=True, 
+            blank=False, 
             null=True, 
             db_comment='ID Модели устройства ',
             verbose_name='Модель устройства '
@@ -301,7 +302,7 @@ class Devices(models.Model):
     sys_mon = models.ForeignKey(
             'MonitoringSystem',
             models.DO_NOTHING,
-            blank=True,
+            blank=False,
             null=True, 
             db_comment='ID системы мониторинга',
             verbose_name='Система мониторинга',
@@ -309,7 +310,7 @@ class Devices(models.Model):
     contragent = models.ForeignKey(
             Contragents, 
             models.DO_NOTHING,
-            blank=True,
+            blank=False,
             null=True, 
             db_comment='ID контрагента',
             verbose_name='Контрагент',
@@ -324,7 +325,7 @@ class Devices(models.Model):
     itprogrammer = models.ForeignKey(
             AuthUser, 
             models.DO_NOTHING, 
-            blank=True, 
+            blank=False, 
             null=True,
             verbose_name='Программист',
             )

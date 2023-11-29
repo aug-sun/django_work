@@ -11,10 +11,10 @@ class ContragentsAdmin(admin.ModelAdmin):
             "ca_field_of_activity",
             )
     list_filter = (
-            "ca_name",
-            "ca_inn",
-            "ca_kpp",
+            "ca_type",
+            "registration_date",
             "ca_field_of_activity",
+            "key_manager",
             )
     search_fields = (
             "ca_name",
@@ -151,9 +151,9 @@ class GlobalLogAdmin(admin.ModelAdmin):
 
     list_filter = (
             "section_type",
-            "edit_id",
             "field",
             "change_time",
+            "action",
             )
     search_fields = (
             "section_type",
@@ -267,6 +267,7 @@ class DevicesAdmin(admin.ModelAdmin):
 #            "contragent",
             "terminal_date",
             'itprogrammer',
+            "devices_brand__devices_vendor",
             )
     search_fields = (
             "device_serial",
