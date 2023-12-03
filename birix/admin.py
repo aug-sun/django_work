@@ -1,6 +1,5 @@
 from django.contrib import admin
 from birix.models import *
-from django.contrib.admin import DateFieldListFilter
 
 class ContragentsAdmin(admin.ModelAdmin):
     list_display = (
@@ -140,10 +139,12 @@ class CaObjectsAdmin(admin.ModelAdmin):
 class GlobalLogAdmin(admin.ModelAdmin):
     list_display = (
             "section_type",
-            "edit_id",
+            "get_obj_client",
             "field",
-            "old_value",
-            "new_value",
+#            "old_value",
+#            "new_value",
+            "get_status_old",
+            "get_status_new",
             "change_time",
             "sys_id",
             "action",
@@ -181,6 +182,67 @@ class GlobalLogAdmin(admin.ModelAdmin):
             }),
     )
     list_per_page = 20
+    date_hierarchy = 'change_time'
+
+    def get_obj_client(self, obj):
+        if obj.section_type == 'object':
+            if CaObjects.objects.filter(id=obj.edit_id).first():
+                return CaObjects.objects.filter(id=obj.edit_id).first().owner_contragent
+
+        if obj.section_type == '1С_client':
+            if Contragents.objects.filter(ca_id=obj.edit_id).first():
+                return Contragents.objects.filter(ca_id=obj.edit_id).first().ca_name
+
+    def get_status_old(self, obj):
+        if obj.section_type == 'object' and obj.field == 'object_status_id':
+            if obj.old_value == "0":
+                return 'Не было'
+            if obj.old_value == "1":
+                return 'Новый не на абонентке'
+            if obj.old_value == "2":
+                return 'Тестоввый не на абонентке'
+            if obj.old_value == "3":
+                return 'На абонентке'
+            if obj.old_value == "4":
+                return 'Ждёт перевода'
+            if obj.old_value == "5":
+                return 'Приостановлен'
+            if obj.old_value == "6":
+                return 'Переведённый в другую систему'
+            if obj.old_value == "7":
+                return 'Деактивирован'
+            else:
+                return obj.old_value
+        else:
+            return obj.old_value
+
+    def get_status_new(self, obj):
+        if obj.section_type == 'object' and obj.field == 'object_status_id':
+            if obj.new_value == "0":
+                return 'Не было'
+            if obj.new_value == "1":
+                return 'Новый не на абонентке'
+            if obj.new_value == "2":
+                return 'Тестоввый не на абонентке'
+            if obj.new_value == "3":
+                return 'На абонентке'
+            if obj.new_value == "4":
+                return 'Ждёт перевода'
+            if obj.new_value == "5":
+                return 'Приостановлен'
+            if obj.new_value == "6":
+                return 'Переведённый в другую систему'
+            if obj.new_value == "7":
+                return 'Деактивирован'
+            else:
+                return obj.new_value
+        else:
+            return obj.new_value
+
+    get_obj_client.short_description = "Контрагент"
+    get_status_old.short_description = "Старое значение"
+    get_status_new.short_description = "Новое значение"
+
 
 
 
@@ -188,13 +250,13 @@ class SimCardsAdmin(admin.ModelAdmin):
     list_display = (
             "sim_iccid",
             "sim_tel_number",
-#            "client_name",
             "sim_cell_operator",
             "sim_owner",
             "sim_date",
             "contragent",
             "terminal_imei",
             'itprogrammer',
+            'get_device',
 
             )
 
@@ -252,6 +314,15 @@ class SimCardsAdmin(admin.ModelAdmin):
         'contragent',
     )
     list_per_page = 20
+    date_hierarchy = 'sim_date'
+
+    def get_device(self, obj):
+        if Devices.objects.filter(device_imei=obj.terminal_imei).first():
+            if obj.terminal_imei == Devices.objects.filter(device_imei=obj.terminal_imei).first().device_imei:
+                return Devices.objects.filter(device_imei=obj.terminal_imei).first().device_serial
+
+    get_device.short_description = 'Серийный номер устройства'
+    list_display_links = ('get_device',)
 
 class DevicesAdmin(admin.ModelAdmin):
     list_display = (
@@ -263,11 +334,11 @@ class DevicesAdmin(admin.ModelAdmin):
             "sys_mon",
             "contragent",
             'itprogrammer',
+            'get_sim',
             )
 
     list_filter = (
             "devices_brand",
-#            "contragent",
             "terminal_date",
             'itprogrammer',
             "devices_brand__devices_vendor",
@@ -285,10 +356,8 @@ class DevicesAdmin(admin.ModelAdmin):
                 'fields': (
                     'device_serial',
                     'device_imei',
-#                    'client_name',
                     'terminal_date',
                     'devices_brand',
-#                    'name_it',
                     'sys_mon',
                     'contragent',
                     'itprogrammer',
@@ -301,10 +370,8 @@ class DevicesAdmin(admin.ModelAdmin):
                 'fields': (
                     'device_serial',
                     'device_imei',
-#                    'client_name',
                     'terminal_date',
                     'devices_brand',
-#                    'name_it',
                     'sys_mon',
                     'contragent__ca_id',
                     'itprogrammer',
@@ -314,6 +381,15 @@ class DevicesAdmin(admin.ModelAdmin):
     )
     raw_id_fields = ['contragent']
     list_per_page = 20
+    date_hierarchy = 'terminal_date'
+
+    def get_sim(self, obj):
+        if SimCards.objects.filter(terminal_imei=obj.device_imei).first():
+            if obj.device_imei == SimCards.objects.filter(terminal_imei=obj.device_imei).first().terminal_imei:
+                return SimCards.objects.filter(terminal_imei=obj.device_imei).first().sim_iccid
+
+    get_sim.short_description = 'Симкарта на устройстве'
+    list_display_links = ('get_sim',)
 
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)

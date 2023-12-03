@@ -7,7 +7,6 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
-
 class CellOperator(models.Model):
     name = models.CharField(max_length=60, db_comment='Имя сотового оператора')
     ca_price = models.IntegerField(blank=True, null=True, db_comment='цена для клиентов')
@@ -431,11 +430,33 @@ class GlobalLogging(models.Model):
         update = "update", "Изменение"
         delete = "delete", "Удаление"
 
+    class ValuesChoices(models.TextChoices):
+        no_name = "0", "Небыло такого"
+        new = "1", "Новый не на абонентке"
+        test = "2", "Тесовый не на абонентке"
+        abon = "3", "На абонентке с госномером"
+        vait_abon = "4", "Ждёт перевода не на абонентке"
+        stop_abon = "5", "Приостановлен не на абонентке"
+        perev = "6", "Переведенный не на абонентке"
+        deact = "7", "Деактивирован"
 
-    section_type = models.CharField(max_length=50)
+
+
+    section_type = models.CharField(
+            max_length=50,
+            verbose_name='Тип секции',
+            )
     edit_id = models.IntegerField()
-    field = models.CharField(max_length=50)
-    old_value = models.CharField(max_length=255, blank=True, null=True)
+    field = models.CharField(
+            max_length=50,
+            verbose_name='Поле',
+            )
+    old_value = models.CharField(
+            max_length=255, 
+            blank=True,
+            null=True,
+            verbose_name='Старое значение',
+            )
     new_value = models.CharField(
             max_length=255, 
             blank=True,
@@ -585,6 +606,10 @@ class ObjectVehicles(models.Model):
 
 
 class SimCards(models.Model):
+    class Owner(models.IntegerChoices):
+        ME = 1, 'Мы'
+        CLIENT = 0, 'Клиент'
+
     sim_id = models.AutoField(primary_key=True)
     sim_iccid = models.CharField(max_length=40, blank=True, null=True, db_comment='ICCID')
     sim_tel_number = models.CharField(
@@ -614,7 +639,8 @@ class SimCards(models.Model):
             blank=True,
             null=True,
             db_comment='Владелец сим (мы или клиент)',
-            verbose_name='Мы или клиент'
+            verbose_name='Мы или клиент',
+            choices=Owner.choices
             )
     sim_device = models.ForeignKey(Devices, models.DO_NOTHING, blank=True, null=True, db_comment='ID к девайсам(devices)')
     sim_date = models.DateTimeField(
@@ -622,13 +648,6 @@ class SimCards(models.Model):
             null=True, 
             db_comment='Дата регистрации сим',
             verbose_name='Дата регистрации сим',
-            )
-    name_it = models.CharField(
-            max_length=100,
-            blank=True, 
-            null=True,
-            db_comment='Имя активировавшего',
-            verbose_name='Имя активировавшего',
             )
     status = models.IntegerField(
             blank=True,
