@@ -322,7 +322,7 @@ class SimCardsAdmin(admin.ModelAdmin):
                 return Devices.objects.filter(device_imei=obj.terminal_imei).first().device_serial
 
     get_device.short_description = 'Серийный номер устройства'
-    list_display_links = ('get_device',)
+#    list_display_links = ('get_device',)
 
 class DevicesAdmin(admin.ModelAdmin):
     list_display = (
@@ -389,7 +389,7 @@ class DevicesAdmin(admin.ModelAdmin):
                 return SimCards.objects.filter(terminal_imei=obj.device_imei).first().sim_iccid
 
     get_sim.short_description = 'Симкарта на устройстве'
-    list_display_links = ('get_sim',)
+#    list_display_links = ('get_sim',)
 
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)
