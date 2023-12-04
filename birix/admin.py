@@ -102,6 +102,8 @@ class CaObjectsAdmin(admin.ModelAdmin):
             "owner_user",
             "contragent",
             "imei",
+            "get_device",
+            "get_sim",
             )
 
     list_filter = (
@@ -134,6 +136,29 @@ class CaObjectsAdmin(admin.ModelAdmin):
             }),
     )
     list_per_page = 20
+
+    def get_device(self, obj):
+        if Devices.objects.filter(device_imei=obj.imei).first():
+            if obj.imei == Devices.objects.filter(device_imei=obj.imei).first().device_imei:
+                return [
+                        Devices.objects.filter(device_imei=obj.imei).first().device_serial,
+                        Devices.objects.filter(device_imei=obj.imei).first().devices_brand,
+                        ]
+    def get_sim(self, obj):
+        if SimCards.objects.filter(terminal_imei=obj.imei).first():
+            if obj.imei == None:
+                return "Сим не найден"
+                
+            if obj.imei == SimCards.objects.filter(terminal_imei=obj.imei).first().terminal_imei:
+                return [SimCards.objects.filter(terminal_imei=obj.imei).first().sim_iccid,
+                        SimCards.objects.filter(terminal_imei=obj.imei).first().sim_tel_number,
+                        SimCards.objects.filter(
+                            terminal_imei=obj.imei
+                            ).first().sim_cell_operator.name
+                        ]
+
+    get_device.short_description = 'Терминал'
+    get_sim.short_description = 'Симкарта'
 
 
 class GlobalLogAdmin(admin.ModelAdmin):
