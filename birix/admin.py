@@ -1,5 +1,8 @@
 from django.contrib import admin
 from birix.models import *
+from birix.utils import get_accouns, get_history 
+from django import forms
+
 
 class ContragentsAdmin(admin.ModelAdmin):
     list_display = (
@@ -415,6 +418,15 @@ class DevicesAdmin(admin.ModelAdmin):
 
     get_sim.short_description = 'Симкарта на устройстве'
 #    list_display_links = ('get_sim',)
+
+class DateRangeForm(forms.Form):
+    start = forms.DateField()
+    end = forms.DateField()
+
+class ATSAdmin(admin.ModelAdmin):
+    pass
+
+
 
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)
