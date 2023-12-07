@@ -7,14 +7,14 @@ def calendar_call(request):
     if request.method == 'POST':
         start = request.POST['start_date']
         end = request.POST['end_date']
-        duration = request.POST['duration']
+        duration_user = request.POST['duration']
         detes = get_history(start, end)
         officers = get_accouns()
         result = []
         for i in detes:
             count = len(str(i).split(","))
             if count >= 8:
-                if int(str(i).split(",")[7]) >= int(duration):
+                if int(str(i).split(",")[7]) >= int(duration_user):
                     clear_date = str(str(i).split(",")[5]).replace("T", " ").replace("Z", "")
                     clear_type = "Входящий звонок" if str(i).split(",")[1] == "in" else "Исходящий звонок"
                     duration = str(i).split(",")[7]
