@@ -51,15 +51,56 @@ class Contragents(models.Model):
         return self.ca_name
 
 class LoginUsers(models.Model):
+    class StatusChoices(models.IntegerChoices):
+        if_active = 1, 'Не подверждена но активирована'
+        inactive = 0, "Заблокирована"
+        verified = 2, 'Подверждена и активирована'
+
     client_name = models.CharField(max_length=200, blank=True, null=True)
-    login = models.CharField(max_length=60, blank=True, null=True)
-    email = models.CharField(max_length=60, blank=True, null=True)
-    password = models.CharField(max_length=60, blank=True, null=True)
-    date_create = models.DateField(blank=True, null=True)
+    login = models.CharField(
+            max_length=60,
+            blank=True, 
+            null=False,
+            verbose_name='Логин',
+            )
+    email = models.CharField(
+            max_length=60, 
+            blank=True, 
+            null=True,
+            )
+    password = models.CharField(
+            max_length=60,
+            blank=True, 
+            null=True,
+            verbose_name='Пароль',
+            )
+    date_create = models.DateField(
+            blank=True,
+            null=True,
+            verbose_name='Дата создания',
+            )
     system = models.ForeignKey('MonitoringSystem', models.DO_NOTHING, blank=True, null=True)
     contragent = models.ForeignKey(Contragents, models.DO_NOTHING, blank=True, null=True, db_comment='ID контрагента')
-    comment_field = models.CharField(max_length=270, blank=True, null=True, db_comment='Поле с комментариями')
-    ca_uid = models.CharField(max_length=100, blank=True, null=True, db_comment='Уникальный id контрагента')
+    comment_field = models.CharField(
+            max_length=270, 
+            blank=True, 
+            null=True,
+            db_comment='Поле с комментариями',
+            verbose_name='Комментарии',
+            )
+    ca_uid = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True, 
+            db_comment='Уникальный id контрагента'
+            )
+    account_status = models.SmallIntegerField(
+            blank=True,
+            null=True,
+            db_comment='Статус аккаунта',
+            verbose_name='Статус аккаунта',
+            choices=StatusChoices.choices,
+            )
 
     class Meta:
         managed = False

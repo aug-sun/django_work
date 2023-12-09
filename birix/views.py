@@ -1,8 +1,11 @@
 from django.shortcuts import render
 from birix.utils import get_accouns, get_history
 from datetime import datetime
+from django.contrib import admin
+import birix.models as models
+from django.contrib.auth.decorators import login_required
 
-
+@login_required
 def calendar_call(request):
     if request.method == 'POST':
         start = request.POST['start_date']
@@ -43,5 +46,17 @@ def calendar_call(request):
     else:
         return render(request, 'calendar.html')
 
+@login_required
+def not_present_accounts(request):
+    not_present = models.LoginUsers.objects.filter(
+       account_status=1,
+    ).all()
+    results = []
+    for i in not_present:
+        results.append(i)
+    return render(request, 'not_present.html', {'results': results})
 
-
+@login_required
+def home(request):
+    return render(request, 'home.html')
+    

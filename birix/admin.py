@@ -1,8 +1,7 @@
 from django.contrib import admin
 from birix.models import *
-from birix.utils import get_accouns, get_history 
 from django import forms
-
+from django.utils.safestring import mark_safe
 
 class ContragentsAdmin(admin.ModelAdmin):
     list_display = (
@@ -39,11 +38,11 @@ class ContragentsAdmin(admin.ModelAdmin):
         )
     list_per_page = 20
 
+
 class LoginUsersAdmin(admin.ModelAdmin):
+
     list_display = (
-            "client_name",
             "login",
-            "email",
             "password",
             "date_create",
             "system",
@@ -419,14 +418,6 @@ class DevicesAdmin(admin.ModelAdmin):
     get_sim.short_description = 'Симкарта на устройстве'
 #    list_display_links = ('get_sim',)
 
-class DateRangeForm(forms.Form):
-    start = forms.DateField()
-    end = forms.DateField()
-
-class ATSAdmin(admin.ModelAdmin):
-    pass
-
-
 
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)
@@ -434,3 +425,4 @@ admin.site.register(GlobalLogging, GlobalLogAdmin)
 admin.site.register(CaObjects, CaObjectsAdmin)
 admin.site.register(SimCards, SimCardsAdmin)
 admin.site.register(Devices, DevicesAdmin)
+
