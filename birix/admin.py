@@ -48,6 +48,7 @@ class LoginUsersAdmin(admin.ModelAdmin):
             "system",
             "contragent",
             "comment_field",
+            "account_status",
             )
 
     list_filter = (
@@ -73,6 +74,7 @@ class LoginUsersAdmin(admin.ModelAdmin):
                     'system',
                     'contragent',
                     'comment_field',
+                    'account_status',
                 )
             }),
     )
@@ -89,10 +91,12 @@ class LoginUsersAdmin(admin.ModelAdmin):
                     'system',
                     'contragent',
                     'comment_field',
+                    'account_status',
                 )
             })
     )
-    raw_id_fields = ('contragent',)
+    autocomplete_fields = ('contragent',)
+    #raw_id_fields = ('contragent',)
     list_per_page = 20
 
 class CaObjectsAdmin(admin.ModelAdmin):
@@ -337,7 +341,10 @@ class SimCardsAdmin(admin.ModelAdmin):
                 )
             })
     )
-    raw_id_fields = (
+    # raw_id_fields = (
+    #     'contragent',
+    # )
+    autocomplete_fields = (
         'contragent',
     )
     list_per_page = 20
@@ -406,7 +413,10 @@ class DevicesAdmin(admin.ModelAdmin):
             })
 
     )
-    raw_id_fields = ['contragent']
+    #raw_id_fields = ['contragent']
+    autocomplete_fields = (
+        'contragent',
+    )
     list_per_page = 20
     date_hierarchy = 'terminal_date'
 

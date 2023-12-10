@@ -27,6 +27,7 @@
                 <th>Номер</th>
                 <th>Имя сотрудника</th>
                 <th>Длительность</th>
+                <th>Запись разговора</th>
             </tr>
             </thead>
 
@@ -38,6 +39,7 @@
                 <td>{{ result.number }}</td>
                 <td>{{ result.name }}</td>
                 <td>{{ result.duration }}</td>
+                <td><a href="{{ result.link }}">Скачать</a></td>
             </tr>
             {% endfor %}
             </tbody>

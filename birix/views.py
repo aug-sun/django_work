@@ -14,6 +14,13 @@ def calendar_call(request):
         detes = get_history(start, end)
         officers = get_accouns()
         result = []
+        ofice_users = models.AuthUser.objects.all()
+        list_last_names = []
+        view_user = request.user.username
+        concrete_user = models.AuthUser.objects.filter(username=view_user).first()
+        for i in ofice_users:
+            list_last_names.append(f"{i.last_name} {i.first_name}")
+
         for i in detes:
             count = len(str(i).split(","))
             if count >= 8:
@@ -32,15 +39,21 @@ def calendar_call(request):
                         if name == o["name"]:
                             clear_name = o["realName"]
 
-                    result.append(
-                            {
-                                'date': clear_date,
-                                'type': clear_type,
-                                'number': str(i).split(",")[2],
-                                'name': clear_name,
-                                'duration': clear_duration,
-                            }
-                            )
+                    link_head = str(i).split(",")[8]
+                
+
+                    if clear_name in list_last_names:
+
+                        result.append(
+                                {
+                                    'date': clear_date,
+                                    'type': clear_type,
+                                    'number': str(i).split(",")[2],
+                                    'name': clear_name,
+                                    'duration': clear_duration,
+                                    "link": link_head,
+                                }
+                                )
                 
         return render(request, 'calendar.html', {'results': result})
     else:
@@ -59,4 +72,5 @@ def not_present_accounts(request):
 @login_required
 def home(request):
     return render(request, 'home.html')
-    
+
+
