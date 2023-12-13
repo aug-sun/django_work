@@ -145,6 +145,8 @@ class CaObjectsAdmin(admin.ModelAdmin):
 
     def get_device(self, obj):
         if Devices.objects.filter(device_imei=obj.imei).first():
+            if obj.imei == None:
+                return "Терминал не найден"
             if obj.imei == Devices.objects.filter(device_imei=obj.imei).first().device_imei:
                 return [
                         Devices.objects.filter(device_imei=obj.imei).first().device_serial,

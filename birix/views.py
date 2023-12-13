@@ -4,6 +4,7 @@ from datetime import datetime
 from django.contrib import admin
 import birix.models as models
 from django.contrib.auth.decorators import login_required
+from django.views.generic.edit import UpdateView
 
 @login_required
 def calendar_call(request):
@@ -66,11 +67,28 @@ def not_present_accounts(request):
     ).all()
     results = []
     for i in not_present:
-        results.append(i)
+        if i.contragent == None:
+            client = "Нет привязки к клиенту 1с"
+        else:
+            client = i.contragent.ca_name
+
+        results.append(
+                {
+                    'login': i.login,
+                    'client': client,
+                    'id': i.id
+                }
+                )
     return render(request, 'not_present.html', {'results': results})
+
 
 @login_required
 def home(request):
     return render(request, 'home.html')
 
-
+class UpdateUserView(UpdateView):
+    model = models.LoginUsers
+    success_message = 'Учётка успешно обновлена'
+    fields = ['account_status']
+    template_name = 'edit_login.html'
+    success_url = '../not_present'
