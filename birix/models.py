@@ -23,23 +23,122 @@ class CellOperator(models.Model):
 
 class Contragents(models.Model):
     ca_id = models.AutoField(primary_key=True)
-    ca_holding = models.ForeignKey('Holdings', models.DO_NOTHING, blank=True, null=True, db_comment='ID холдинга')
-    ca_name = models.CharField(max_length=255, blank=True, null=True, db_comment='Название контрагента')
-    ca_shortname = models.CharField(max_length=250, blank=True, null=True)
-    ca_inn = models.CharField(max_length=60, blank=True, null=True, db_comment='ИНН контрагента')
-    ca_kpp = models.CharField(max_length=60, blank=True, null=True, db_comment='КПП контрагента')
-    ca_bill_account_num = models.CharField(max_length=60, blank=True, null=True, db_comment='Расчетный счет')
-    ca_bill_account_bank_name = models.CharField(max_length=60, blank=True, null=True, db_comment='Наименование банка')
-    ca_bill_account_ogrn = models.CharField(max_length=60, blank=True, null=True, db_comment='ОГРН')
-    ca_edo_connect = models.IntegerField(blank=True, null=True, db_comment='Обмен ЭДО')
-    ca_field_of_activity = models.CharField(max_length=260, blank=True, null=True, db_comment='Сфера деятельности')
-    ca_type = models.CharField(max_length=60, blank=True, null=True, db_comment='тип компании')
-    unique_onec_id = models.CharField(max_length=100, blank=True, null=True, db_comment='уникальный id в 1С контрагента ')
-    registration_date = models.DateField(blank=True, null=True, db_comment='Дата регистрации в 1С')
-    key_manager = models.CharField(max_length=200, blank=True, null=True, db_comment='Основной менеджер ')
-    actual_address = models.CharField(max_length=300, blank=True, null=True, db_comment='Фактический адрес ')
-    registered_office = models.CharField(max_length=300, blank=True, null=True, db_comment='Юридический адрес ')
-    phone = models.CharField(max_length=200, blank=True, null=True, db_comment='Телефон ')
+    ca_holding = models.ForeignKey(
+            'Holdings', 
+            models.DO_NOTHING, 
+            blank=True, null=True, 
+            db_comment='ID холдинга',
+            verbose_name='Холдинг',
+            )
+    ca_name = models.CharField(
+            max_length=255, 
+            blank=True,
+            null=True, 
+            db_comment='Название контрагента',
+            verbose_name='Название',
+            )
+    ca_shortname = models.CharField(
+            max_length=250, 
+            blank=True, 
+            null=True,
+            verbose_name='Короткое название',
+            )
+    ca_inn = models.CharField(
+            max_length=60,
+            blank=True,
+            null=True, 
+            db_comment='ИНН контрагента',
+            verbose_name='ИНН',
+            )
+    ca_kpp = models.CharField(
+            max_length=60,
+            blank=True,
+            null=True,
+            db_comment='КПП контрагента',
+            verbose_name='КПП',
+            )
+    ca_bill_account_num = models.CharField(
+            max_length=60, 
+            blank=True,
+            null=True, 
+            db_comment='Расчетный счет',
+            verbose_name='Расчетный счет',
+            )
+    ca_bill_account_bank_name = models.CharField(
+            max_length=60,
+            blank=True, 
+            null=True,
+            db_comment='Наименование банка',
+            verbose_name='Наименование банка',
+            )
+    ca_bill_account_ogrn = models.CharField(
+            max_length=60, 
+            blank=True,
+            null=True,
+            db_comment='ОГРН',
+            verbose_name='ОГРН',
+            )
+    ca_edo_connect = models.IntegerField(
+            blank=True, 
+            null=True,
+            db_comment='Обмен ЭДО',
+            verbose_name='Обмен ЭДО',
+            )
+    ca_field_of_activity = models.CharField(
+            max_length=260,
+            blank=True,
+            null=True, 
+            db_comment='Сфера деятельности',
+            verbose_name='Сфера деятельности',
+            )
+    ca_type = models.CharField(
+            max_length=60, 
+            blank=True, 
+            null=True, 
+            db_comment='тип компании',
+            verbose_name='Тип',
+            )
+    unique_onec_id = models.CharField(
+            max_length=100, 
+            blank=True, 
+            null=True,
+            db_comment='уникальный id в 1С контрагента ',
+            verbose_name='Уникальный id в 1С',
+            )
+    registration_date = models.DateField(
+            blank=True,
+            null=True, 
+            db_comment='Дата регистрации в 1С',
+            verbose_name='Дата регистрации',
+            )
+    key_manager = models.CharField(
+            max_length=200, 
+            blank=True,
+            null=True, 
+            db_comment='Основной менеджер ',
+            verbose_name='Основной менеджер',
+            )
+    actual_address = models.CharField(
+            max_length=300, 
+            blank=True,
+            null=True, 
+            db_comment='Фактический адрес ',
+            verbose_name='Фактический адрес',
+            )
+    registered_office = models.CharField(
+            max_length=300, 
+            blank=True, 
+            null=True, 
+            db_comment='Юридический адрес ',
+            verbose_name='Юридический адрес',
+            )
+    phone = models.CharField(
+            max_length=200,
+            blank=True, 
+            null=True,
+            db_comment='Телефон ',
+            verbose_name='Телефон',
+            )
 
     class Meta:
         managed = False
@@ -56,7 +155,12 @@ class LoginUsers(models.Model):
         inactive = 0, "Заблокирована"
         verified = 2, 'Подверждена и активирована'
 
-    client_name = models.CharField(max_length=200, blank=True, null=True)
+    client_name = models.CharField(
+            max_length=200, 
+            blank=True,
+            null=True,
+            verbose_name='Название клиента',
+            )
     login = models.CharField(
             max_length=60,
             blank=True, 
@@ -79,8 +183,21 @@ class LoginUsers(models.Model):
             null=True,
             verbose_name='Дата создания',
             )
-    system = models.ForeignKey('MonitoringSystem', models.DO_NOTHING, blank=True, null=True)
-    contragent = models.ForeignKey(Contragents, models.DO_NOTHING, blank=True, null=True, db_comment='ID контрагента')
+    system = models.ForeignKey(
+            'MonitoringSystem',
+            models.DO_NOTHING, 
+            blank=True,
+            null=True,
+            verbose_name='Система мониторинга',
+            )
+    contragent = models.ForeignKey(
+            Contragents, 
+            models.DO_NOTHING, 
+            blank=True, 
+            null=True, 
+            db_comment='ID контрагента',
+            verbose_name='Контрагент как в 1С',
+            )
     comment_field = models.CharField(
             max_length=270, 
             blank=True, 
@@ -92,7 +209,8 @@ class LoginUsers(models.Model):
             max_length=100,
             blank=True,
             null=True, 
-            db_comment='Уникальный id контрагента'
+            db_comment='Уникальный id контрагента',
+            verbose_name='Уникальный id контрагента',
             )
     account_status = models.SmallIntegerField(
             blank=True,
@@ -245,7 +363,12 @@ class CaObjects(models.Model):
             verbose_name='Статус объекта',
             )
     object_add_date = models.DateTimeField(blank=True, null=True, db_comment='Дата добавления объекта')
-    object_last_message = models.DateTimeField(blank=True, null=True, db_comment='Дата последнего сообщения')
+    object_last_message = models.DateTimeField(
+            blank=True,
+            null=True,
+            db_comment='Дата последнего сообщения',
+            verbose_name='Дата последнего сообщения',
+            )
     object_margin = models.IntegerField(blank=True, null=True, db_comment='Надбавка к базовой цене объекта')
     owner_contragent = models.CharField(
             max_length=200, 
@@ -261,7 +384,13 @@ class CaObjects(models.Model):
             db_comment='Хозяин юзер',
             verbose_name='Логин юзера в системе мониторинга',
             )
-    imei = models.CharField(max_length=100, blank=True, null=True, db_comment='идентификатор терминала')
+    imei = models.CharField(
+            max_length=100, 
+            blank=True, 
+            null=True, 
+            db_comment='идентификатор терминала',
+            verbose_name='IMEI терминала',
+            )
     updated = models.DateTimeField(blank=True, null=True, db_comment='Когда изменён')
     object_created = models.DateTimeField(blank=True, null=True, db_comment='Дата создания в системе мониторинга ')
     parent_id_sys = models.CharField(max_length=200, blank=True, null=True, db_comment='Id клиента в системе мониторинга')
@@ -303,7 +432,8 @@ class Devices(models.Model):
             blank=False, 
             null=True, 
             db_comment='Серийный номер устройства',
-            verbose_name='Серийный номер устройства')
+            verbose_name='Серийный номер устройства'
+            )
     device_imei = models.CharField(
             max_length=60, 
             blank=False,
@@ -381,8 +511,20 @@ class Devices(models.Model):
         return self.device_serial
 
 class DevicesBrands(models.Model):
-    name = models.CharField(max_length=200, blank=True, null=True)
-    devices_vendor = models.ForeignKey('DevicesVendor', models.DO_NOTHING, blank=True, null=True, db_comment='Id Вендора терминалов')
+    name = models.CharField(
+            max_length=200, 
+            blank=True, 
+            null=True,
+            verbose_name='Модель устройства',
+            )
+    devices_vendor = models.ForeignKey(
+            'DevicesVendor', 
+            models.DO_NOTHING, 
+            blank=True, 
+            null=True,
+            db_comment='Id Вендора терминалов',
+            verbose_name='Фирма',
+            )
 
     class Meta:
         managed = False
@@ -515,7 +657,13 @@ class GlobalLogging(models.Model):
             verbose_name='ID системы',
             choices=SysChoices.choices
             )
-    action = models.CharField(max_length=100, blank=True, null=True, choices=ActionChoices.choices)
+    action = models.CharField(
+            max_length=100, 
+            blank=True, 
+            null=True, 
+            choices=ActionChoices.choices,
+            verbose_name='Действие',
+            )
 
     class Meta:
         managed = False
@@ -573,9 +721,25 @@ class Holdings(models.Model):
 
 class MonitoringSystem(models.Model):
     mon_sys_id = models.AutoField(primary_key=True)
-    mon_sys_name = models.CharField(max_length=60, blank=True, null=True, db_comment='Название системы мониторинга')
-    mon_sys_obj_price_suntel = models.IntegerField(blank=True, null=True, db_comment='Стоимость объекта для Сантел')
-    mon_sys_ca_obj_price_default = models.IntegerField(blank=True, null=True, db_comment='Базовая стоимость объекта для Контрагента')
+    mon_sys_name = models.CharField(
+            max_length=60,
+            blank=True,
+            null=True,
+            db_comment='Название системы мониторинга',
+            verbose_name='Название системы мониторинга',
+            )
+    mon_sys_obj_price_suntel = models.IntegerField(
+            blank=True,
+            null=True,
+            db_comment='Стоимость объекта для Сантел',
+            verbose_name='Стоимость объекта для Сантел',
+            )
+    mon_sys_ca_obj_price_default = models.IntegerField(
+            blank=True,
+            null=True,
+            db_comment='Базовая стоимость объекта для Контрагента',
+            verbose_name='Базовая стоимость объекта для Контрагента',
+            )
 
     class Meta:
         managed = False
@@ -617,7 +781,12 @@ class ObjectSensors(models.Model):
 
 class ObjectStatuses(models.Model):
     status_id = models.AutoField(primary_key=True)
-    status = models.CharField(max_length=50, blank=True, null=True)
+    status = models.CharField(
+            max_length=50,
+            blank=True,
+            null=True,
+            verbose_name='Статус',
+            )
     abon_bool = models.IntegerField(db_comment='На абонентке или нет')
 
     class Meta:
@@ -652,7 +821,13 @@ class SimCards(models.Model):
         CLIENT = 0, 'Клиент'
 
     sim_id = models.AutoField(primary_key=True)
-    sim_iccid = models.CharField(max_length=40, blank=True, null=True, db_comment='ICCID')
+    sim_iccid = models.CharField(
+            max_length=40, 
+            blank=True,
+            null=True, 
+            db_comment='ICCID',
+            verbose_name='ICCID'
+            )
     sim_tel_number = models.CharField(
             max_length=40, 
             blank=True, 

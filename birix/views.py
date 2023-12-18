@@ -5,6 +5,8 @@ from django.contrib import admin
 import birix.models as models
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import UpdateView
+from django.http import HttpResponse
+
 
 @login_required
 def calendar_call(request):
@@ -92,3 +94,5 @@ class UpdateUserView(UpdateView):
     fields = ['account_status']
     template_name = 'edit_login.html'
     success_url = '../not_present'
+
+

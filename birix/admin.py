@@ -430,6 +430,29 @@ class DevicesAdmin(admin.ModelAdmin):
     get_sim.short_description = 'Симкарта на устройстве'
 #    list_display_links = ('get_sim',)
 
+class DeviceBrandsAdmin(admin.ModelAdmin):
+    list_display = (
+            "name",
+            "devices_vendor",
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    'name',
+                    'devices_vendor',
+
+                )
+            })
+    )
+
+    list_filter = (
+            "devices_vendor",
+    )
+
+
+            
+
 
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)
@@ -437,4 +460,4 @@ admin.site.register(GlobalLogging, GlobalLogAdmin)
 admin.site.register(CaObjects, CaObjectsAdmin)
 admin.site.register(SimCards, SimCardsAdmin)
 admin.site.register(Devices, DevicesAdmin)
-
+admin.site.register(DevicesBrands, DeviceBrandsAdmin)
