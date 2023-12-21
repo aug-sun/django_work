@@ -6,7 +6,7 @@ import birix.models as models
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import UpdateView
 from django.http import HttpResponse
-
+import pandas as pd
 
 @login_required
 def calendar_call(request):
@@ -57,10 +57,23 @@ def calendar_call(request):
                                     "link": link_head,
                                 }
                                 )
-                
+        request.session['result'] = result
+        request.session['name_file'] = f"Звонки от {start} по {end}"
         return render(request, 'calendar.html', {'results': result})
+
     else:
         return render(request, 'calendar.html')
+
+@login_required
+def download_excel(request):
+    result = request.session.get('result')
+    name_file = request.session.get('name_file')
+    df = pd.DataFrame(result)
+    df.to_excel(f'{name_file}.xlsx', index=False)
+    with open(f'{name_file}.xlsx', 'rb') as f:
+        response = HttpResponse(f.read(), content_type='application/vnd.ms-excel')
+        response['Content-Disposition'] = f'attachment; filename={name_file}.xlsx'
+        return response
 
 @login_required
 def not_present_accounts(request):

@@ -44,6 +44,9 @@
             {% endfor %}
             </tbody>
         </table>
+        
+        <a href="{% url 'download_excel' %}" class="btn btn-primary">Скачать excel</a>
+        <br>
     {% endif %}
 
     <a href="{% url 'home' %}">На главную</a>
