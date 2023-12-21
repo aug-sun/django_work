@@ -378,6 +378,7 @@ class DevicesAdmin(admin.ModelAdmin):
             "terminal_date",
             'itprogrammer',
             "devices_brand__devices_vendor",
+            "sys_mon",
             )
     search_fields = (
             "device_serial",
