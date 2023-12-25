@@ -5,6 +5,7 @@ from django.contrib import admin
 import birix.models as models
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import UpdateView
+from django.views.generic.list import ListView
 from django.http import HttpResponse
 import pandas as pd
 
@@ -108,4 +109,48 @@ class UpdateUserView(UpdateView):
     template_name = 'edit_login.html'
     success_url = '../not_present'
 
+@login_required
+def get_contragents_data(request):
+    all_contragents = models.Contragents.objects.values("ca_id", "ca_name").distinct()
+    all_objects = models.CaObjects.objects.values("id", "contragent", "object_status")
+    results = []
+    for i in all_contragents:
+        abon_count = 0
+        test_count = 0
+        new_count = 0
+        wait_prog = 0
+        deact = 0
+        for j in all_objects:
+            if i["ca_id"] == j["contragent"]:
+                if j["object_status"] == 3:
+                    abon_count += 1
+                if j["object_status"] == 2:
+                    test_count += 1
+                if j["object_status"] == 1:
+                    new_count += 1
+                if j["object_status"] == 4:
+                    wait_prog += 1
+                if j["object_status"] == 7:
+                    deact += 1
+
+        results.append(
+                {
+                    'contragent_name': i["ca_name"],
+                    "abon_count": abon_count,
+                    "test_count": test_count,
+                    "new_count": new_count,
+                    "wait_prog": wait_prog,
+                    "deact": deact
+
+                }
+        )
+    sorted_results = sorted(
+            results,
+            key=lambda a: (a['abon_count'], a['test_count'], a['new_count'], a['wait_prog'], a['deact']), 
+            reverse=True
+            )
+    request.session['result'] = sorted_results
+    request.session['name_file'] = f"Контрагенты{datetime.now()}"
+                
+    return render(request, 'contragents.html', {'results': sorted_results})
 

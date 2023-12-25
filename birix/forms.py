@@ -1,7 +1,11 @@
 from django import forms
+from dal import autocomplete
 from birix.models import *
 
-
-class LoginClientForm(forms.Form):
-    status = forms.ChoiceField(choices=[(1, 'Не подверждена но активирована'), (0, 'Заблокирована'), (2, 'Подверждена и активирована')])
-
+class ContragentsForm(forms.ModelForm):
+    class Meta:
+        model = Contragents
+        fields = 'ca_name'
+        widgets = {
+                'ca_name': autocomplete.ModelSelect2(url='contragents-autocomplete')
+        }
