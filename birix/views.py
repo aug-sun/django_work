@@ -8,8 +8,11 @@ from django.views.generic.edit import UpdateView
 from django.views.generic.list import ListView
 from django.http import HttpResponse
 import pandas as pd
+from django.contrib.auth.decorators import user_passes_test
+
 
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
 def calendar_call(request):
     if request.method == 'POST':
         start = request.POST['start_date']
