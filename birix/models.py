@@ -819,6 +819,10 @@ class SimCards(models.Model):
     class Owner(models.IntegerChoices):
         ME = 1, 'Мы'
         CLIENT = 0, 'Клиент'
+    class Status(models.IntegerChoices):
+        ACTIVE = 1, 'Активна'
+        DELETE = 0, 'Списана'
+        STOP = 2, 'Приостановлена'
 
     sim_id = models.AutoField(primary_key=True)
     sim_iccid = models.CharField(
@@ -870,6 +874,7 @@ class SimCards(models.Model):
             null=True, 
             db_comment='Активность симки',
             verbose_name='Активность симки',
+            choices=Status.choices
             )
     terminal_imei = models.CharField(
             max_length=25, 

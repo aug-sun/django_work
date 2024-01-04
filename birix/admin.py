@@ -290,6 +290,7 @@ class SimCardsAdmin(admin.ModelAdmin):
             "terminal_imei",
             'itprogrammer',
             'get_device',
+            'status'
 
             )
 
@@ -323,6 +324,7 @@ class SimCardsAdmin(admin.ModelAdmin):
                     'contragent',
                     "terminal_imei",
                     'itprogrammer',
+                    'status',
                 )
             }),
     )
@@ -338,7 +340,8 @@ class SimCardsAdmin(admin.ModelAdmin):
                     'sim_date',
                     'contragent',
                     "terminal_imei",
-                    'itprogrammer'
+                    'itprogrammer',
+                    'status',
 
                 )
             })
