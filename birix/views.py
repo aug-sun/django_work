@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.views.generic.detail import DetailView
 from birix.utils import get_accouns, get_history
 from datetime import datetime
 from django.contrib import admin
@@ -157,3 +158,31 @@ def get_contragents_data(request):
                 
     return render(request, 'contragents.html', {'results': sorted_results})
 
+class ListLoginsView(ListView):
+    model = models.LoginUsers
+    template_name = 'list_logins.html'
+    context_object_name = 'logins'
+
+    
+
+
+class DetailLoginsView(DetailView):
+    model = models.LoginUsers
+    template_name = 'detail_login.html'
+    fields = '__all__'
+    def get_logins_object(self):
+        objects = models.CaObjects.objects.filter(
+            owner_user=self.object.login,
+            object_status=3
+        ).all()
+        return objects
+    logins_object = property(get_logins_object)
+    context_object_name = 'context'
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['logins_object'] = self.logins_object
+        return context
+        
+
+
+    
