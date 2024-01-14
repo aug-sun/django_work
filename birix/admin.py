@@ -1,7 +1,8 @@
 from django.contrib import admin
 from birix.models import *
 from django import forms
-from django.utils.safestring import mark_safe
+from django.http import HttpResponse
+from openpyxl import Workbook
 
 class ContragentsAdmin(admin.ModelAdmin):
     list_display = (
@@ -66,7 +67,6 @@ class LoginUsersAdmin(admin.ModelAdmin):
     fieldsets = (
             (None, {
                 'fields': (
-                    'client_name',
                     'login',
                     'email',
                     'password',
@@ -83,7 +83,6 @@ class LoginUsersAdmin(admin.ModelAdmin):
             (None, {
                 'classes': ('wide',),
                 'fields': (
-                    'client_name',
                     'login',
                     'email',
                     'password',
@@ -96,8 +95,9 @@ class LoginUsersAdmin(admin.ModelAdmin):
             })
     )
     autocomplete_fields = ('contragent',)
-    #raw_id_fields = ('contragent',)
     list_per_page = 20
+
+
 
 class CaObjectsAdmin(admin.ModelAdmin):
     list_display = (
@@ -454,8 +454,54 @@ class DeviceBrandsAdmin(admin.ModelAdmin):
             "devices_vendor",
     )
 
+class ContactsAdmin(admin.ModelAdmin):
+    list_display = (
+            "ca_contact_cell_num",
+            "ca_contact_name",
+            "ca_contact_surname",
+            "ca",
+            "ca_contact_position",
+            )
 
-            
+    fieldsets = (
+            (None, {
+                'fields': (
+                    'ca_contact_cell_num',
+                    'ca_contact_name',
+                    'ca_contact_surname',
+                    'ca',
+                    'ca_contact_position',
+
+                )
+            }),
+    )
+
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    'ca_contact_cell_num',
+                    'ca_contact_name',
+                    'ca_contact_surname',
+                    'ca',
+                    'ca_contact_position',
+                )
+            })
+    )
+
+    search_fields = (
+            "ca_contact_cell_num",
+            "ca_contact_name",
+            "ca_contact_surname",
+            "ca",
+    )
+    list_filter = (
+            "ca_contact_position",
+    )
+    autocomplete_fields = (
+        'ca',
+    )
+    
 
 
 admin.site.register(Contragents, ContragentsAdmin)
@@ -465,3 +511,4 @@ admin.site.register(CaObjects, CaObjectsAdmin)
 admin.site.register(SimCards, SimCardsAdmin)
 admin.site.register(Devices, DevicesAdmin)
 admin.site.register(DevicesBrands, DeviceBrandsAdmin)
+admin.site.register(CaContacts, ContactsAdmin)

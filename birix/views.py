@@ -164,8 +164,6 @@ class ListLoginsView(ListView):
     context_object_name = 'logins'
 
     
-
-
 class DetailLoginsView(DetailView):
     model = models.LoginUsers
     template_name = 'detail_login.html'

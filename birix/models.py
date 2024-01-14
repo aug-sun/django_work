@@ -175,26 +175,26 @@ class LoginUsers(models.Model):
     password = models.CharField(
             max_length=60,
             blank=True, 
-            null=True,
+            null=False,
             verbose_name='Пароль',
             )
     date_create = models.DateField(
             blank=True,
-            null=True,
+            null=False,
             verbose_name='Дата создания',
             )
     system = models.ForeignKey(
             'MonitoringSystem',
             models.DO_NOTHING, 
             blank=True,
-            null=True,
+            null=False,
             verbose_name='Система мониторинга',
             )
     contragent = models.ForeignKey(
             Contragents, 
             models.DO_NOTHING, 
             blank=True, 
-            null=True, 
+            null=False, 
             db_comment='ID контрагента',
             verbose_name='Контрагент как в 1С',
             )
@@ -214,17 +214,19 @@ class LoginUsers(models.Model):
             )
     account_status = models.SmallIntegerField(
             blank=True,
-            null=True,
+            null=False,
             db_comment='Статус аккаунта',
             verbose_name='Статус аккаунта',
             choices=StatusChoices.choices,
             )
+
 
     class Meta:
         managed = False
         db_table = 'Login_users'
         verbose_name = 'Логин пользователя'
         verbose_name_plural = 'Логины пользователей'
+
 
     def __str__(self):
         return self.login
@@ -305,19 +307,86 @@ class AuthUserUserPermissions(models.Model):
 
 
 class CaContacts(models.Model):
+    class PositionChoices(models.TextChoices):
+        DIRECTOR = 'Директор', 'Директор'
+        MANAGER = 'Менеджер', 'Менеджер'
+        ACCOUNTANT = 'Бухгалтер', 'Бухгалтер'
+        MONTAGER = 'Монтажник', 'Монтажник'
+        IT_TECH = 'IT_специалист', 'IT_специалист'
+        DISPETCHER = 'Диспетчер', 'Диспетчер'
+        DRIVER = 'Водитель', 'Водитель'
+
+
+
     ca_contact_id = models.AutoField(primary_key=True)
-    ca = models.ForeignKey(Contragents, models.DO_NOTHING, blank=True, null=True, db_comment='id компании')
-    ca_contact_name = models.CharField(max_length=255, blank=True, null=True, db_comment='Имя контактного лица')
-    ca_contact_surname = models.CharField(max_length=255, blank=True, null=True, db_comment='Фамилия контактного лица')
-    ca_contact_middlename = models.CharField(max_length=255, blank=True, null=True, db_comment='Отчество контактного лица')
-    ca_contact_cell_num = models.CharField(max_length=255, blank=True, null=True, db_comment='Сотовый телефон контакт. лица')
-    ca_contact_work_num = models.CharField(max_length=255, blank=True, null=True, db_comment='Рабочий телефон к.л.')
-    ca_contact_email = models.CharField(max_length=255, blank=True, null=True, db_comment='Электр.почт. к.л')
-    ca_contact_position = models.CharField(max_length=255, blank=True, null=True, db_comment='Должность к.л.')
+    ca = models.ForeignKey(
+            Contragents,
+            models.DO_NOTHING, 
+            blank=True,
+            null=True,
+            db_comment='id компании',
+            verbose_name='Компания как в 1С',
+            )
+    ca_contact_name = models.CharField(
+            max_length=255,
+            blank=True,
+            null=True,
+            db_comment='Имя контактного лица',
+            verbose_name='Имя контактного лица',
+            )
+    ca_contact_surname = models.CharField(
+            max_length=255, 
+            blank=True, 
+            null=True, 
+            db_comment='Фамилия контактного лица',
+            verbose_name='Фамилия контактного лица',
+            )
+    ca_contact_middlename = models.CharField(
+            max_length=255, 
+            blank=True, 
+            null=True, 
+            db_comment='Отчество контактного лица',
+            verbose_name='Отчество контактного лица',
+            )
+    ca_contact_cell_num = models.CharField(
+            max_length=255,
+            blank=True,
+            null=True,
+            db_comment='Сотовый телефон контакт. лица',
+            unique=True,
+            verbose_name='Сотовый телефон контакт. лица',
+            )
+    ca_contact_work_num = models.CharField(
+            max_length=255, 
+            blank=True,
+            null=True,
+            db_comment='Рабочий телефон к.л.',
+            verbose_name='Рабочий телефон к.л.',
+            )
+    ca_contact_email = models.CharField(
+            max_length=255,
+            blank=True,
+            null=True,
+            db_comment='Электр.почт. к.л',
+            verbose_name='Электр.почт. к.л',
+            )
+    ca_contact_position = models.CharField(
+            max_length=255,
+            blank=True, 
+            null=True,
+            db_comment='Должность к.л.',
+            verbose_name='Должность к.л.',
+            choices=PositionChoices.choices,
+            )
 
     class Meta:
         managed = False
         db_table = 'ca_contacts'
+        verbose_name = 'Контакты'
+        verbose_name_plural = 'Контакты'
+
+    def __str__(self):
+        return self.ca_contact_name
 
 
 class CaContracts(models.Model):
