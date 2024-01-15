@@ -502,6 +502,47 @@ class ContactsAdmin(admin.ModelAdmin):
         'ca',
     )
     
+class DevicesCommandAdmin(admin.ModelAdmin):
+    list_display = (
+            "command",
+            "device_brand",
+            "method",
+            "description",
+            )
+
+    list_filter = (
+            "device_brand",
+            "method",
+    )
+
+    search_fields = (
+            "command",
+            "description",
+    )
+
+    fieldsets = (
+            (None, {
+                'fields': (
+                    'command',
+                    'device_brand',
+                    'method',
+                    'description',
+                )
+            }),
+    )
+
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    'command',
+                    'device_brand',
+                    'method',
+                    'description',
+                )
+            })
+    )
+
 
 
 admin.site.register(Contragents, ContragentsAdmin)
@@ -512,3 +553,4 @@ admin.site.register(SimCards, SimCardsAdmin)
 admin.site.register(Devices, DevicesAdmin)
 admin.site.register(DevicesBrands, DeviceBrandsAdmin)
 admin.site.register(CaContacts, ContactsAdmin)
+admin.site.register(DevicesCommands, DevicesCommandAdmin)

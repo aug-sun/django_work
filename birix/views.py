@@ -1,3 +1,4 @@
+from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import render
 from django.views.generic.detail import DetailView
 from birix.utils import get_accouns, get_history
@@ -181,6 +182,18 @@ class DetailLoginsView(DetailView):
         context['logins_object'] = self.logins_object
         return context
         
+def objects(request):
+   objects = models.CaObjects.objects.all()
+   page = request.GET.get('page', 1)
 
+   paginator = Paginator(objects, 20)
+   try:
+       objects = paginator.page(page)
+   except PageNotAnInteger:
+       objects = paginator.page(1)
+   except EmptyPage:
+       objects = paginator.page(paginator.num_pages)
+
+   return render(request, 'objects.html', {'objects': objects})
 
     

@@ -7,7 +7,31 @@
   </head>
   <body>
 
-<h1>Объекты</h1>
+    <h1>Список объектов</h1>
+    <ul>
+        {% for object in objects %}
+            <li>{{ object }}</li>
+        {% endfor %}
+    </ul>
+    <div class="pagination">
+        <span class="step-links">
+            {% if objects.has_previous %}
+                <a href="?page=1">&laquo; первая</a>
+                <a href="?page={{ objects.previous_page_number }}">предыдущая</a>
+            {% endif %}
 
-<a href="{% url 'not_present' %}">Назад</a>
+            <span class="current">
+                Страница {{ objects.number }} из {{ objects.paginator.num_pages }}.
+            </span>
+
+            {% if objects.has_next %}
+                <a href="?page={{ objects.next_page_number }}">следующая</a>
+                <a href="?page={{ objects.paginator.num_pages }}">последняя &raquo;</a>
+            {% endif %}
+        </span>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+  </body>
+</html>
 

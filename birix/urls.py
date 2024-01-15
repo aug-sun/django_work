@@ -11,4 +11,5 @@ urlpatterns = [
     path("contragents", views.get_contragents_data, name="contragents"),
     path("list_logins", views.ListLoginsView.as_view(), name="list_logins"),
     path("detail_login/<int:pk>", views.DetailLoginsView.as_view(), name="detail_login"),
+    path("objects", views.objects, name="objects"),
 ]

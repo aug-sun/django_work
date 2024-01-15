@@ -315,6 +315,7 @@ class CaContacts(models.Model):
         IT_TECH = 'IT_специалист', 'IT_специалист'
         DISPETCHER = 'Диспетчер', 'Диспетчер'
         DRIVER = 'Водитель', 'Водитель'
+        TECH_SUPPORT = 'Техподдержка', 'Техподдержка'
 
 
 
@@ -605,11 +606,47 @@ class DevicesBrands(models.Model):
         return self.name
 
 class DevicesCommands(models.Model):
+
+    class Methods(models.TextChoices):
+        SMS = 'SMS'
+        TCP = 'TCP'
+
     command = models.CharField(max_length=20, blank=True, null=True)
+    device_brand = models.ForeignKey(
+            DevicesBrands,
+            models.RESTRICT,
+            blank=True, 
+            null=True,
+            db_comment='Id Модели устройства',
+            verbose_name='Модель устройства',
+            db_column='device_brand'
+            )
+    method = models.CharField(
+            max_length=10, 
+            blank=True, 
+            null=True,
+            choices=Methods.choices,
+            verbose_name='Метод отправки',
+            )
+    description = models.CharField(
+            max_length=270,
+            blank=True,
+            null=True,
+            verbose_name='Описание',
+    )
+
 
     class Meta:
         managed = False
         db_table = 'devices_commands'
+        verbose_name = 'Команда терминала'
+        verbose_name_plural = 'Команды терминалов'
+
+    def __str__(self):
+        return self.command
+
+
+
 
 
 class DevicesVendor(models.Model):
