@@ -1,5 +1,5 @@
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.views.generic.detail import DetailView
 from birix.utils import get_accouns, get_history
 from datetime import datetime
@@ -183,17 +183,46 @@ class DetailLoginsView(DetailView):
         return context
         
 def objects(request):
-   objects = models.CaObjects.objects.all()
-   page = request.GET.get('page', 1)
+    search_name = request.GET.get('search_name')
+    search_imei = request.GET.get('search_imei')
+    objects = models.CaObjects.objects.all()
 
-   paginator = Paginator(objects, 20)
-   try:
-       objects = paginator.page(page)
-   except PageNotAnInteger:
-       objects = paginator.page(1)
-   except EmptyPage:
-       objects = paginator.page(paginator.num_pages)
+    if search_name:
+        objects = objects.filter(object_name__icontains=search_name)
 
-   return render(request, 'objects.html', {'objects': objects})
+        objects = objects.order_by('object_name')
 
-    
+        return render(request, 'objects.html', {'objects': objects})
+
+    elif search_imei:
+        objects = objects.filter(imei__icontains=search_imei)
+
+        objects = objects.order_by('object_name')
+
+        return render(request, 'objects.html', {'objects': objects})
+
+    elif search_name and search_imei:
+        objects = objects.filter(object_name__icontains=search_name, imei__icontains=search_imei)
+
+        objects = objects.order_by('object_name')
+
+        return render(request, 'objects.html', {'objects': objects})
+
+
+    else:
+        page = request.GET.get('page', 1)
+
+        paginator = Paginator(objects, 20)
+        try:
+            objects = paginator.page(page)
+        except PageNotAnInteger:
+            objects = paginator.page(1)
+        except EmptyPage:
+            objects = paginator.page(paginator.num_pages)
+
+        return render(request, 'objects.html', {'objects': objects})
+
+
+def objects_detail(request, pk):
+    object = get_object_or_404(models.CaObjects, pk=pk)
+    return render(request, 'objects_detail.html', {'object': object})

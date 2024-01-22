@@ -610,8 +610,9 @@ class DevicesCommands(models.Model):
     class Methods(models.TextChoices):
         SMS = 'SMS'
         TCP = 'TCP'
+        ANY = 'Любой'
 
-    command = models.CharField(max_length=20, blank=True, null=True)
+    command = models.CharField(max_length=100, blank=True, null=True)
     device_brand = models.ForeignKey(
             DevicesBrands,
             models.RESTRICT,
@@ -629,7 +630,7 @@ class DevicesCommands(models.Model):
             verbose_name='Метод отправки',
             )
     description = models.CharField(
-            max_length=270,
+            max_length=300,
             blank=True,
             null=True,
             verbose_name='Описание',
