@@ -542,7 +542,7 @@ class Devices(models.Model):
     sys_mon = models.ForeignKey(
             'MonitoringSystem',
             models.DO_NOTHING,
-            blank=False,
+            blank=True,
             null=True, 
             db_comment='ID системы мониторинга',
             verbose_name='Система мониторинга',
