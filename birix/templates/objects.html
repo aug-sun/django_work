@@ -7,12 +7,43 @@
   </head>
   <body>
 
+    <h1> Поиск по имени объекта </h1>
+    <form method="get">
+        <input type="text" name="search_name" value="{{ request.GET.q }}">
+        <button type="submit">Поиск</button>
+    </form>
+
+    <h1> Поиск по IMEI объекта </h1>
+    <form method="get">
+        <input type="text" name="search_imei" value="{{ request.GET.q }}">
+        <button type="submit">Поиск</button>
+    </form>
+
     <h1>Список объектов</h1>
-    <ul>
-        {% for object in objects %}
-            <li>{{ object }}</li>
-        {% endfor %}
-    </ul>
+
+      {% if objects %}
+          <table class="table table-bordered table-striped">
+              <thead>
+              <tr>
+                  <th>Имя объекта</th>
+                  <th>Imei</th>
+                  <th>Клиент</tr>
+
+              </tr>
+              </thead>
+
+              <tbody>
+              {% for object in objects %}
+              <tr>
+                  <td><a href="{% url 'detail_object' object.id %}">{{ object.object_name }}</a></td>
+                  <td>{{ object.imei }}</td>
+                  <td>{{ object.contragent }}</td>
+
+              </tr>
+              {% endfor %}
+              </tbody>
+          </table>
+      {% endif %}
     <div class="pagination">
         <span class="step-links">
             {% if objects.has_previous %}

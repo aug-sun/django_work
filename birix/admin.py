@@ -280,6 +280,17 @@ class GlobalLogAdmin(admin.ModelAdmin):
 
 
 class SimCardsAdmin(admin.ModelAdmin):
+
+
+    actions = ['copy_record']
+
+    def copy_record(self, request, queryset):
+        for obj in queryset:
+            obj.id = None
+            obj.save()
+
+    copy_record.short_description = "Копировать запись"
+
     list_display = (
             "sim_iccid",
             "sim_tel_number",
@@ -364,6 +375,17 @@ class SimCardsAdmin(admin.ModelAdmin):
 #    list_display_links = ('get_device',)
 
 class DevicesAdmin(admin.ModelAdmin):
+
+
+    actions = ['copy_record']
+
+    def copy_record(self, request, queryset):
+        for obj in queryset:
+            obj.id = None
+            obj.save()
+
+    copy_record.short_description = "Копировать запись"
+
     list_display = (
             "device_serial",
             "device_imei",
@@ -455,6 +477,16 @@ class DeviceBrandsAdmin(admin.ModelAdmin):
     )
 
 class ContactsAdmin(admin.ModelAdmin):
+
+    actions = ['copy_record']
+
+    def copy_record(self, request, queryset):
+        for obj in queryset:
+            obj.id = None
+            obj.save()
+
+    copy_record.short_description = "Копировать запись"
+
     list_display = (
             "ca_contact_cell_num",
             "ca_contact_name",
@@ -503,6 +535,16 @@ class ContactsAdmin(admin.ModelAdmin):
     )
     
 class DevicesCommandAdmin(admin.ModelAdmin):
+
+    actions = ['copy_record']
+
+    def copy_record(self, request, queryset):
+        for obj in queryset:
+            obj.id = None
+            obj.save()
+
+    copy_record.short_description = "Копировать запись"
+
     list_display = (
             "command",
             "device_brand",
