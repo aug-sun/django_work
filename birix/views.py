@@ -63,6 +63,10 @@ def calendar_call(request):
                                     "link": link_head,
                                 }
                                 )
+        if request.POST.get('number_phone'):
+            number_phone = request.POST.get('number_phone')
+            result = [i for i in result if i['number'] == number_phone]
+
         request.session['result'] = result
         request.session['name_file'] = f"Звонки от {start} по {end}"
         return render(request, 'calendar.html', {'results': result})
