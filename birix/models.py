@@ -7,6 +7,8 @@
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
 
+
+
 class CellOperator(models.Model):
     name = models.CharField(max_length=60, db_comment='Имя сотового оператора')
     ca_price = models.IntegerField(blank=True, null=True, db_comment='цена для клиентов')
