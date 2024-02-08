@@ -309,8 +309,9 @@ class SimCardsAdmin(admin.ModelAdmin):
             "sim_cell_operator",
             "sim_owner",
             "sim_date",
-#            "contragent",
             'itprogrammer',
+            'status',
+            "contragent",
 
             )
     search_fields = (

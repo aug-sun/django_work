@@ -930,6 +930,8 @@ class SimCards(models.Model):
         ACTIVE = 1, 'Активна'
         DELETE = 0, 'Списана'
         STOP = 2, 'Приостановлена'
+        INITIAL_BLOCKING = 3, 'Первоночальная блокировка'
+        DEF_STATUS = 4, 'Статус не известен'
 
     sim_id = models.AutoField(primary_key=True)
     sim_iccid = models.CharField(
