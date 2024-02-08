@@ -3,6 +3,7 @@ from birix.models import *
 from django import forms
 from django.http import HttpResponse
 from openpyxl import Workbook
+import ast
 
 class ContragentsAdmin(admin.ModelAdmin):
     list_display = (
@@ -587,6 +588,34 @@ class DevicesCommandAdmin(admin.ModelAdmin):
     )
 
 
+class LogAdmin(admin.ModelAdmin):
+    list_display = (
+            "action_time",
+            "object_id",
+            "object_repr",
+            "get_change_message",
+            "get_change_info",
+            "content_type",
+            "user",
+            )
+
+    def get_change_message(self, obj):
+        if obj.action_flag == 1:
+            return 'Добавлен новый объект'
+        if obj.action_flag == 2:
+            return 'Объект изменен'
+        if obj.action_flag == 3:
+            return 'Объект удален'
+
+    def get_change_info(self, obj):
+        message = str(obj.change_message).replace('[', '').replace(']', '').replace('{"changed": {"', "").replace('{"added": {}}', "").replace('"}}', "").replace('fields": "', "")
+        clear_message = message.encode('utf-8').decode('unicode_escape')
+        return clear_message
+
+    get_change_info.short_description = 'Изменения'
+
+    get_change_message.short_description = 'Действие'
+
 
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)
@@ -597,3 +626,4 @@ admin.site.register(Devices, DevicesAdmin)
 admin.site.register(DevicesBrands, DeviceBrandsAdmin)
 admin.site.register(CaContacts, ContactsAdmin)
 admin.site.register(DevicesCommands, DevicesCommandAdmin)
+admin.site.register(DjangoAdminLog, LogAdmin)

@@ -663,17 +663,20 @@ class DevicesVendor(models.Model):
         return self.vendor_name
 
 class DjangoAdminLog(models.Model):
-    action_time = models.DateTimeField()
+    action_time = models.DateTimeField(verbose_name='Время действия')
     object_id = models.TextField(blank=True, null=True)
-    object_repr = models.CharField(max_length=200)
-    action_flag = models.PositiveSmallIntegerField()
-    change_message = models.TextField()
-    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True)
-    user = models.ForeignKey(AuthUser, models.DO_NOTHING)
+    object_repr = models.CharField(max_length=200, verbose_name='Объект')
+    action_flag = models.PositiveSmallIntegerField(verbose_name='Флаг действия')
+    change_message = models.TextField(verbose_name='Изменения')
+    content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True, verbose_name="Тип")
+    user = models.ForeignKey(AuthUser, models.DO_NOTHING, verbose_name='Пользователь')
 
     class Meta:
         managed = False
         db_table = 'django_admin_log'
+        verbose_name = 'Лог администрирования'
+        verbose_name_plural = 'Логи администрирования'
+
 
 
 class DjangoContentType(models.Model):
@@ -684,6 +687,13 @@ class DjangoContentType(models.Model):
         managed = False
         db_table = 'django_content_type'
         unique_together = (('app_label', 'model'),)
+        verbose_name = 'Тип контента'
+        verbose_name_plural = 'Типы контента'
+
+    def __str__(self):
+        return self.model
+
+    
 
 
 class DjangoMigrations(models.Model):
