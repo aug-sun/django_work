@@ -189,6 +189,7 @@ class DetailLoginsView(DetailView):
 def objects(request):
     search_name = request.GET.get('search_name')
     search_imei = request.GET.get('search_imei')
+    search_client = request.GET.get('search_client')
     objects = models.CaObjects.objects.all()
 
     if search_name:
@@ -205,13 +206,13 @@ def objects(request):
 
         return render(request, 'objects.html', {'objects': objects})
 
-    elif search_name and search_imei:
-        objects = objects.filter(object_name__icontains=search_name, imei__icontains=search_imei)
+
+    if search_client:
+        objects = objects.filter(owner_contragent=search_client)
 
         objects = objects.order_by('object_name')
 
         return render(request, 'objects.html', {'objects': objects})
-
 
     else:
         page = request.GET.get('page', 1)

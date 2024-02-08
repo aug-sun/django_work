@@ -18,6 +18,11 @@
         <input type="text" name="search_imei" value="{{ request.GET.q }}">
         <button type="submit">Поиск</button>
     </form>
+    <h1> Поиск по объекта по контрагенту</h1>
+    <form method="get">
+        <input type="text" name="search_client" value="{{ request.GET.q }}">
+        <button type="submit">Поиск</button>
+    </form>
 
     <h1>Список объектов</h1>
 
@@ -35,7 +40,7 @@
               <tbody>
               {% for object in objects %}
               <tr>
-                  <td><a href="{% url 'detail_object' object.id %}">{{ object.object_name }}</a></td>
+                  <td>{{ object.object_name }}</td>
                   <td>{{ object.imei }}</td>
                   <td>{{ object.contragent }}</td>
 
