@@ -24,6 +24,7 @@ def calendar_call(request):
         officers = get_accouns()
         result = []
         ofice_users = models.AuthUser.objects.all()
+        contacts = models.CaContacts.objects.all()
         list_last_names = []
         view_user = request.user.username
         concrete_user = models.AuthUser.objects.filter(username=view_user).first()
@@ -44,11 +45,19 @@ def calendar_call(request):
                     clear_duration = f"{h:02d}:{m:02d}:{s:02d}"
                     clear_name = ""
                     name = str(str(i).split(",")[3]).split("@")[0]
+                    contact_name = ""
+                    contact_position = ""
+                    contact_client = ""
                     for o in officers:
                         if name == o["name"]:
                             clear_name = o["realName"]
 
                     link_head = str(i).split(",")[8]
+                    for phone in contacts:
+                        if str(str(i).split(",")[2]) == str(phone.ca_contact_cell_num):
+                            contact_name = f"{phone.ca_contact_surname} {phone.ca_contact_name}"
+                            contact_position = phone.ca_contact_position
+                            contact_client = phone.ca.ca_name
                 
 
                     if clear_name in list_last_names:
@@ -61,6 +70,9 @@ def calendar_call(request):
                                     'name': clear_name,
                                     'duration': clear_duration,
                                     "link": link_head,
+                                    "contact_name": contact_name,
+                                    "contact_position": contact_position,
+                                    "contact_client": contact_client
                                 }
                                 )
         if request.POST.get('number_phone'):

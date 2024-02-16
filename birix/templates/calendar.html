@@ -28,6 +28,9 @@
                 <th>Тип звонка</th>
                 <th>Номер</th>
                 <th>Имя сотрудника</th>
+                <th>Определилось имя</th>
+                <th>Определилась должность</th>
+                <th>Определился клиент</th>
                 <th>Длительность</th>
                 <th>Запись разговора</th>
             </tr>
@@ -40,6 +43,9 @@
                 <td>{{ result.type }}</td>
                 <td>{{ result.number }}</td>
                 <td>{{ result.name }}</td>
+                <td>{{ result.contact_name }}</td>
+                <td>{{ result.contact_position }}</td>
+                <td>{{ result.contact_client }}</td>
                 <td>{{ result.duration }}</td>
                 <td><a href="{{ result.link }}">Скачать</a></td>
             </tr>
