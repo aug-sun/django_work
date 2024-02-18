@@ -617,6 +617,21 @@ class LogAdmin(admin.ModelAdmin):
     get_change_message.short_description = 'Действие'
 
 
+class DeviceVendorAdmin(admin.ModelAdmin):
+    list_display = (
+            "vendor_name",
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    'vendor_name',
+
+                )
+            })
+    )
+
+
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)
 admin.site.register(GlobalLogging, GlobalLogAdmin)
@@ -627,3 +642,4 @@ admin.site.register(DevicesBrands, DeviceBrandsAdmin)
 admin.site.register(CaContacts, ContactsAdmin)
 admin.site.register(DevicesCommands, DevicesCommandAdmin)
 admin.site.register(DjangoAdminLog, LogAdmin)
+admin.site.register(DevicesVendor, DeviceVendorAdmin)

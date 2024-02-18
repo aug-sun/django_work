@@ -658,6 +658,8 @@ class DevicesVendor(models.Model):
     class Meta:
         managed = False
         db_table = 'devices_vendor'
+        verbose_name = 'Фирма терминалов'
+        verbose_name_plural = 'Фирмы терминалов'
 
     def __str__(self):
         return self.vendor_name
