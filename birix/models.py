@@ -511,7 +511,8 @@ class Devices(models.Model):
             blank=False,
             null=True, 
             db_comment='IMEI устройства',
-            verbose_name='IMEI устройства'
+            verbose_name='IMEI устройства',
+            unique=True,
             )
     client_name = models.CharField(
             max_length=300,
@@ -872,15 +873,34 @@ class MonitoringSystem(models.Model):
         return self.mon_sys_name
 
 class ObjectRetranslators(models.Model):
+
+    class ProtocolChoices(models.IntegerChoices):
+        egts = 1, "EGTS"
+        wialon_retranslator = 2, "Wialon retranslator"
+        wialon_ips = 3, "Wialon IPS"
+
     retranslator_id = models.AutoField(primary_key=True)
-    retranslator_name = models.CharField(max_length=50, blank=True, null=True)
-    retranslator_suntel_price = models.IntegerField(blank=True, null=True)
-    retranslator_ca_price = models.IntegerField(blank=True, null=True)
-    retr_object = models.ForeignKey(CaObjects, models.DO_NOTHING, blank=True, null=True)
+    retranslator_name = models.CharField(max_length=50, blank=True, null=True, verbose_name='Название тетрансляции')
+    retranslator_suntel_price = models.IntegerField(blank=True, null=True, verbose_name='Цена для Сантел')
+    retranslator_ca_price = models.IntegerField(blank=True, null=True, verbose_name='Цена для Клиента')
+    retrans_adres = models.CharField(max_length=200, blank=True, null=True, verbose_name='Адресс ретранслятора')
+    retrans_protocol = models.SmallIntegerField(
+            blank=True,
+            null=False,
+            db_comment='Протокол ретранслятора',
+            verbose_name='Протокол ретранслятора',
+            choices=ProtocolChoices.choices,
+            )
+
 
     class Meta:
         managed = False
         db_table = 'object_retranslators'
+        verbose_name = 'Ретрансляция'
+        verbose_name_plural = 'Ретрансляции'
+
+    def __str__(self):
+        return self.retranslator_name
 
 
 class ObjectSensors(models.Model):
@@ -1032,3 +1052,15 @@ class SimCards(models.Model):
 
     def __str__(self):
         return self.sim_iccid
+
+class GroupObjectRetrans(models.Model):
+    id_group = models.AutoField(primary_key=True, db_comment='Айдишник')
+    obj = models.ForeignKey(CaObjects, models.DO_NOTHING, db_comment='Айдишник объекта')
+    retr = models.ForeignKey('ObjectRetranslators', models.DO_NOTHING, db_comment='Айдишник ретранслятора')
+
+    class Meta:
+        managed = False
+        db_table = 'group_object_retrans'
+        db_table_comment = 'Таблица для сведения объектов и ретрансляторов'
+        verbose_name = 'Привязка объектов к ретрансляторам'
+        verbose_name_plural = 'Привязки объектов к рентрансляторов'

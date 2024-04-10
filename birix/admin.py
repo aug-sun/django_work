@@ -630,7 +630,68 @@ class DeviceVendorAdmin(admin.ModelAdmin):
                 )
             })
     )
+class MonitoringSystemAdmin(admin.ModelAdmin):
+    list_display = (
+            "mon_sys_name",
+            "mon_sys_ca_obj_price_default",
+            "mon_sys_obj_price_suntel",
 
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    'vendor_name',
+                    "mon_sys_ca_obj_price_default",
+                    "mon_sys_obj_price_suntel",
+
+                )
+            })
+    )
+
+class ObjectRetranslatorsAdmin(admin.ModelAdmin):
+    list_display = (
+            "retranslator_name",
+            "retranslator_suntel_price",
+            "retranslator_ca_price",
+            "retrans_adres",
+            "retrans_protocol",
+
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    'retranslator_name',
+                    "retranslator_suntel_price",
+                    "retranslator_ca_price",
+                    "retrans_adres",
+                    "retrans_protocol",
+
+                )
+            })
+    )
+class GroupObjectRetransAdmin(admin.ModelAdmin):
+    list_display = (
+            "obj",
+            "retr",
+
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    "obj__id",
+                    "retr",
+
+                )
+            })
+    )
+
+
+    autocomplete_fields = (
+        'obj',
+    )
 
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)
@@ -643,3 +704,6 @@ admin.site.register(CaContacts, ContactsAdmin)
 admin.site.register(DevicesCommands, DevicesCommandAdmin)
 admin.site.register(DjangoAdminLog, LogAdmin)
 admin.site.register(DevicesVendor, DeviceVendorAdmin)
+admin.site.register(MonitoringSystem, MonitoringSystemAdmin)
+admin.site.register(ObjectRetranslators, ObjectRetranslatorsAdmin)
+admin.site.register(GroupObjectRetrans, GroupObjectRetransAdmin)
