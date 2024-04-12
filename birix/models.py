@@ -1055,12 +1055,22 @@ class SimCards(models.Model):
 
 class GroupObjectRetrans(models.Model):
     id_group = models.AutoField(primary_key=True, db_comment='Айдишник')
-    obj = models.ForeignKey(CaObjects, models.DO_NOTHING, db_comment='Айдишник объекта')
-    retr = models.ForeignKey('ObjectRetranslators', models.DO_NOTHING, db_comment='Айдишник ретранслятора')
+    obj = models.ForeignKey(
+            CaObjects, 
+            models.DO_NOTHING,
+            db_comment='Айдишник объекта',
+            verbose_name='Объект',
+            )
+    retr = models.ForeignKey(
+            'ObjectRetranslators', 
+            models.DO_NOTHING, 
+            db_comment='Айдишник ретранслятора',
+            verbose_name='Ретрансляция',
+            )
 
     class Meta:
         managed = False
         db_table = 'group_object_retrans'
         db_table_comment = 'Таблица для сведения объектов и ретрансляторов'
         verbose_name = 'Привязка объектов к ретрансляторам'
-        verbose_name_plural = 'Привязки объектов к рентрансляторов'
+        verbose_name_plural = 'Привязки объектов к рентрансляторам'

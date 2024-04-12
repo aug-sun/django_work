@@ -687,6 +687,10 @@ class GroupObjectRetransAdmin(admin.ModelAdmin):
                 )
             })
     )
+    list_filter = (
+            "retr",
+            'obj__contragent_id'
+            )
 
 
     autocomplete_fields = (
