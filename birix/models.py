@@ -720,6 +720,69 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
+
+class EquipmentWarehouse(models.Model):
+    id_unit = models.BigAutoField(primary_key=True, db_comment='Идентификатор записи')
+    add_date = models.DateTimeField(
+            db_comment='Время регистрации добавления товара на склад',
+            verbose_name='Время регистрации добавления'
+            )
+    serial_number = models.CharField(
+            unique=True, 
+            max_length=200,
+            db_comment='Серийный номер',
+            verbose_name='Серийный номер'
+            )
+    availability = models.IntegerField(
+            db_comment='Наличие на складе\r\n0- нет в наличии\r\n1- в наличии',
+            verbose_name='Наличие на складе'
+            )
+    terminal_model = models.ForeignKey(
+            DevicesBrands, 
+            models.DO_NOTHING, 
+            blank=True, null=True, 
+            db_comment='Реляционный id device',
+            verbose_name='Модель устройства'
+            )
+    sensor_id = models.IntegerField(
+            blank=True, 
+            null=True, 
+            db_comment='Реляция id',
+            verbose_name='Реляционный id'
+            )
+    delivery_date = models.DateTimeField(
+            blank=True,
+            null=True, 
+            db_comment='Дата выдачи')
+    client_id = models.IntegerField(
+            blank=True, 
+            null=True, 
+            db_comment='Клиент как в 1С',
+            )
+    comment = models.CharField(
+            max_length=300, 
+            blank=True, 
+            null=True,
+            db_comment='Комментарии'
+            )
+    whom_issued = models.CharField(
+            max_length=300,
+            db_comment='Кому выдан',
+            verbose_name='Кому выдан' 
+            )
+
+    class Meta:
+        managed = False
+        db_table = 'equipment_warehouse'
+        db_table_comment = 'Таблица склада'
+        verbose_name = 'Склад'
+        verbose_name_plural = 'Склады'
+
+    def __str__(self):
+        return self.serial_number
+
+
+
 class GlobalLogging(models.Model):
     class SysChoices(models.IntegerChoices):
         glonass = 1, "Glonasssoft"
@@ -904,20 +967,34 @@ class ObjectRetranslators(models.Model):
 
 
 class ObjectSensors(models.Model):
+
+
+    class SensorTypeChoices(models.IntegerChoices):
+        level = 1, "ДУТ"
+        temperature = 2, "Температуры"
+        tilt = 3, "Наклона"
+
+    class SensorTechnologyChoices(models.IntegerChoices):
+        analog = 1, "АНАЛОГОВЫЙ"
+        digital = 2, "ЦИФРОВЫЙ"
+        frequency = 3, "ЧАСТОТНЫЙ"
+
+
     sensor_id = models.AutoField(primary_key=True)
-    sensor_object = models.ForeignKey(CaObjects, models.DO_NOTHING, blank=True, null=True, db_comment='На каком объекте стоит по ID объекта')
-    sensor_name = models.CharField(max_length=255, blank=True, null=True, db_comment='Имя датчика в СМ')
-    sensor_type = models.CharField(max_length=255, blank=True, null=True, db_comment='Тип датчика(ДУТ, Температуры, наклона)')
+    sensor_type = models.IntegerField(db_comment='Тип датчика:\r\n1ДУТ, 2Температуры3наклона')
     sensor_vendor = models.CharField(max_length=255, blank=True, null=True, db_comment='производитель')
     sensor_vendor_model = models.CharField(max_length=255, blank=True, null=True, db_comment='Модель датчика')
-    sensor_serial = models.CharField(max_length=255, blank=True, null=True, db_comment='Серийный номер датчика')
-    sensor_mac_address = models.CharField(max_length=255, blank=True, null=True, db_comment='Мак адрес датчика')
-    sensor_technology = models.CharField(max_length=255, blank=True, null=True, db_comment='Подтип датчика(аналоговый, цифровой, частотный)')
+    sensor_technology = models.IntegerField(db_comment='Подтип датчика:\r\n1аналоговый,2цифровой,\r\n3частотный')
     sensor_connect_type = models.CharField(max_length=255, blank=True, null=True, db_comment='Тип подключения')
 
     class Meta:
         managed = False
         db_table = 'object_sensors'
+        verbose_name = 'Датчик'
+        verbose_name_plural = 'Датчики'
+
+    def __str__(self):
+        return self.sensor_vendor_model
 
 
 class ObjectStatuses(models.Model):
