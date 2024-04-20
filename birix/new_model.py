@@ -299,6 +299,24 @@ class DjangoSession(models.Model):
         db_table = 'django_session'
 
 
+class EquipmentWarehouse(models.Model):
+    id_unit = models.BigAutoField(primary_key=True, db_comment='Идентификатор записи')
+    add_date = models.DateTimeField(db_comment='Время регистрации добавления товара на склад')
+    serial_number = models.CharField(unique=True, max_length=200, db_comment='Серийный номер')
+    availability = models.IntegerField(db_comment='Наличие на складе\r\n0- нет в наличии\r\n1- в наличии')
+    terminal_model = models.ForeignKey(DevicesBrands, models.DO_NOTHING, blank=True, null=True, db_comment='Реляционный id device')
+    sensor_id = models.IntegerField(blank=True, null=True, db_comment='Реляция id')
+    delivery_date = models.DateTimeField(blank=True, null=True, db_comment='Дата выдачи')
+    client_id = models.IntegerField(blank=True, null=True, db_comment='Клиент как в 1С')
+    comment = models.CharField(max_length=300, blank=True, null=True)
+    whom_issued = models.CharField(max_length=300, db_comment='Кому выдан')
+
+    class Meta:
+        managed = False
+        db_table = 'equipment_warehouse'
+        db_table_comment = 'Таблица склада'
+
+
 class GlobalLogging(models.Model):
     section_type = models.CharField(max_length=50)
     edit_id = models.IntegerField()
@@ -373,10 +391,11 @@ class MonitoringSystem(models.Model):
 
 class ObjectRetranslators(models.Model):
     retranslator_id = models.AutoField(primary_key=True)
-    retranslator_name = models.CharField(max_length=50, blank=True, null=True)
+    retranslator_name = models.CharField(max_length=50, blank=True, null=True, db_comment='Имя ретранслятора')
     retranslator_suntel_price = models.IntegerField(blank=True, null=True)
     retranslator_ca_price = models.IntegerField(blank=True, null=True)
     retrans_adres = models.CharField(max_length=200, blank=True, null=True, db_comment='Адрес куда ретранслируется')
+    retrans_protocol = models.IntegerField(db_comment='Виды протоколов:\r\n1- Egts\r\n2 - Wialon ретранслятор\r\n3- Wialon IPS')
 
     class Meta:
         managed = False
@@ -385,14 +404,10 @@ class ObjectRetranslators(models.Model):
 
 class ObjectSensors(models.Model):
     sensor_id = models.AutoField(primary_key=True)
-    sensor_object = models.ForeignKey(CaObjects, models.DO_NOTHING, blank=True, null=True, db_comment='На каком объекте стоит по ID объекта')
-    sensor_name = models.CharField(max_length=255, blank=True, null=True, db_comment='Имя датчика в СМ')
-    sensor_type = models.CharField(max_length=255, blank=True, null=True, db_comment='Тип датчика(ДУТ, Температуры, наклона)')
+    sensor_type = models.IntegerField(db_comment='Тип датчика:\r\n1ДУТ, 2Температуры3наклона')
     sensor_vendor = models.CharField(max_length=255, blank=True, null=True, db_comment='производитель')
     sensor_vendor_model = models.CharField(max_length=255, blank=True, null=True, db_comment='Модель датчика')
-    sensor_serial = models.CharField(max_length=255, blank=True, null=True, db_comment='Серийный номер датчика')
-    sensor_mac_address = models.CharField(max_length=255, blank=True, null=True, db_comment='Мак адрес датчика')
-    sensor_technology = models.CharField(max_length=255, blank=True, null=True, db_comment='Подтип датчика(аналоговый, цифровой, частотный)')
+    sensor_technology = models.IntegerField(db_comment='Подтип датчика:\r\n1аналоговый,2цифровой,\r\n3частотный')
     sensor_connect_type = models.CharField(max_length=255, blank=True, null=True, db_comment='Тип подключения')
 
     class Meta:
@@ -429,7 +444,7 @@ class ObjectVehicles(models.Model):
 
 class SimCards(models.Model):
     sim_id = models.AutoField(primary_key=True)
-    sim_iccid = models.CharField(max_length=40, blank=True, null=True, db_comment='ICCID')
+    sim_iccid = models.CharField(unique=True, max_length=40, blank=True, null=True, db_comment='ICCID')
     sim_tel_number = models.CharField(max_length=40, blank=True, null=True, db_comment='телефонный номер сим')
     client_name = models.CharField(max_length=270, blank=True, null=True, db_comment='Имя клиента')
     sim_cell_operator = models.ForeignKey(CellOperator, models.DO_NOTHING, db_column='sim_cell_operator', blank=True, null=True, db_comment='Сотовый оператор(надо по ID)')
