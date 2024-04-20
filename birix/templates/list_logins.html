@@ -18,6 +18,8 @@
                   <th>Учётка</th>
                   <th>Контрагент</th>
                   <th>Система мониторинга</tr>
+                  <th>Пароль</tr>
+                  
 
               </tr>
               </thead>
@@ -28,6 +30,7 @@
                   <td><a href="{% url 'detail_login' login.id %}">{{ login.login }}</a></td>
                   <td>{{ login.contragent }}</td>
                   <td>{{ login.system }}</td>
+                  <td>{{ login.password }}</td>
 
               </tr>
               {% endfor %}
