@@ -973,7 +973,8 @@ class SimCards(models.Model):
             blank=True,
             null=True, 
             db_comment='ICCID',
-            verbose_name='ICCID'
+            verbose_name='ICCID',
+            unique=True,
             )
     sim_tel_number = models.CharField(
             max_length=40, 
