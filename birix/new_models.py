@@ -305,11 +305,12 @@ class EquipmentWarehouse(models.Model):
     serial_number = models.CharField(unique=True, max_length=200, db_comment='Серийный номер')
     availability = models.IntegerField(db_comment='Наличие на складе\r\n0- нет в наличии\r\n1- в наличии')
     terminal_model = models.ForeignKey(DevicesBrands, models.DO_NOTHING, blank=True, null=True, db_comment='Реляционный id device')
-    sensor_id = models.IntegerField(blank=True, null=True, db_comment='Реляция id')
+    sensor = models.ForeignKey('ObjectSensors', models.DO_NOTHING, blank=True, null=True, db_comment='Реляция id')
     delivery_date = models.DateTimeField(blank=True, null=True, db_comment='Дата выдачи')
-    client_id = models.IntegerField(blank=True, null=True, db_comment='Клиент как в 1С')
+    client = models.ForeignKey(Contragents, models.DO_NOTHING, blank=True, null=True, db_comment='Клиент как в 1С')
     comment = models.CharField(max_length=300, blank=True, null=True)
     whom_issued = models.CharField(max_length=300, db_comment='Кому выдан')
+    affiliation = models.IntegerField(db_comment='Принадлежность к подразделению:\r\n0-Сервис\r\n1- мониторинг')
 
     class Meta:
         managed = False

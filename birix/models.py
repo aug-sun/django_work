@@ -722,53 +722,76 @@ class DjangoSession(models.Model):
 
 
 class EquipmentWarehouse(models.Model):
+
+    class AvailabilityChoices(models.IntegerChoices):
+        NO = 0, 'Нет в наличии'
+        YES = 1 , 'В наличии'
+
+    class AffiliationChoices(models.IntegerChoices):
+        service = 0, 'Сервис'
+        monitoring = 1, 'Мониторинг'
+
     id_unit = models.BigAutoField(primary_key=True, db_comment='Идентификатор записи')
     add_date = models.DateTimeField(
             db_comment='Время регистрации добавления товара на склад',
-            verbose_name='Время регистрации добавления'
+            verbose_name='Время прихода на склад',
             )
     serial_number = models.CharField(
-            unique=True, 
+            unique=True,
             max_length=200,
             db_comment='Серийный номер',
-            verbose_name='Серийный номер'
+            verbose_name='Серийный номер',
             )
     availability = models.IntegerField(
             db_comment='Наличие на складе\r\n0- нет в наличии\r\n1- в наличии',
-            verbose_name='Наличие на складе'
+            verbose_name='Наличие на складе',
+            choices=AvailabilityChoices.choices,
             )
     terminal_model = models.ForeignKey(
             DevicesBrands, 
             models.DO_NOTHING, 
-            blank=True, null=True, 
-            db_comment='Реляционный id device',
-            verbose_name='Модель устройства'
-            )
-    sensor_id = models.IntegerField(
             blank=True, 
             null=True, 
+            db_comment='Реляционный id device',
+            verbose_name='Модель терминала',
+            )
+    sensor = models.ForeignKey(
+            'ObjectSensors', 
+            models.DO_NOTHING,
+            blank=True,
+            null=True,
             db_comment='Реляция id',
-            verbose_name='Реляционный id'
+            verbose_name='Датчик',
             )
     delivery_date = models.DateTimeField(
-            blank=True,
-            null=True, 
-            db_comment='Дата выдачи')
-    client_id = models.IntegerField(
+            blank=True, 
+            null=True,
+            db_comment='Дата выдачи',
+            verbose_name='Дата выдачи',
+            )
+    client = models.ForeignKey(
+            Contragents, 
+            models.DO_NOTHING,
             blank=True, 
             null=True, 
             db_comment='Клиент как в 1С',
+            verbose_name='Клиент',
             )
     comment = models.CharField(
             max_length=300, 
-            blank=True, 
+            blank=True,
             null=True,
-            db_comment='Комментарии'
+            db_comment='Комментарии',
             )
     whom_issued = models.CharField(
             max_length=300,
             db_comment='Кому выдан',
-            verbose_name='Кому выдан' 
+            verbose_name='Кому выдан',
+            )
+    affiliation = models.IntegerField(
+            db_comment='Принадлежность к подразделению:\r\n0-Сервис\r\n1- мониторинг',
+            verbose_name='Принадлежность к подразделению',
+            choices=AffiliationChoices.choices,
             )
 
     class Meta:
@@ -981,11 +1004,36 @@ class ObjectSensors(models.Model):
 
 
     sensor_id = models.AutoField(primary_key=True)
-    sensor_type = models.IntegerField(db_comment='Тип датчика:\r\n1ДУТ, 2Температуры3наклона')
-    sensor_vendor = models.CharField(max_length=255, blank=True, null=True, db_comment='производитель')
-    sensor_vendor_model = models.CharField(max_length=255, blank=True, null=True, db_comment='Модель датчика')
-    sensor_technology = models.IntegerField(db_comment='Подтип датчика:\r\n1аналоговый,2цифровой,\r\n3частотный')
-    sensor_connect_type = models.CharField(max_length=255, blank=True, null=True, db_comment='Тип подключения')
+    sensor_type = models.IntegerField(
+            db_comment='Тип датчика:\r\n1ДУТ, 2Температуры3наклона',
+            verbose_name='Тип датчика',
+            choices=SensorTypeChoices.choices,
+            )
+    sensor_vendor = models.CharField(
+            max_length=255,
+            blank=True, 
+            null=True,
+            db_comment='производитель',
+            verbose_name='Производитель',
+            )
+    sensor_vendor_model = models.CharField(
+            max_length=255,
+            blank=True, 
+            null=True, 
+            db_comment='Модель датчика',
+            verbose_name='Модель датчика',
+            )
+    sensor_technology = models.IntegerField(
+            db_comment='Подтип датчика:\r\n1аналоговый,2цифровой,\r\n3частотный',
+            verbose_name='Подтип датчика',
+            choices=SensorTechnologyChoices.choices,
+            )
+    sensor_connect_type = models.CharField(
+            max_length=255,
+            blank=True, 
+            null=True,
+            db_comment='Тип подключения',
+            )
 
     class Meta:
         managed = False

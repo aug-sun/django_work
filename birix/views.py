@@ -121,6 +121,7 @@ def not_present_accounts(request):
 
 @login_required
 def home(request):
+    " Главная страница сайта "
     return render(request, 'home.html')
 
 class UpdateUserView(UpdateView):
@@ -243,3 +244,6 @@ def objects(request):
 def objects_detail(request, pk):
     object = get_object_or_404(models.CaObjects, pk=pk)
     return render(request, 'objects_detail.html', {'object': object})
+
+def get_stock(request):
+    return render(request, 'get_stock.html')

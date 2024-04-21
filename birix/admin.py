@@ -477,6 +477,10 @@ class DeviceBrandsAdmin(admin.ModelAdmin):
     list_filter = (
             "devices_vendor",
     )
+    search_fields = (
+            "name",
+            "devices_vendor__vendor_name",
+    )
 
 class ContactsAdmin(admin.ModelAdmin):
 
@@ -697,6 +701,85 @@ class GroupObjectRetransAdmin(admin.ModelAdmin):
         'obj',
     )
 
+class ObjectSensorsAdmin(admin.ModelAdmin):
+    list_display = (
+            "sensor_type",
+            "sensor_vendor",
+            "sensor_vendor_model",
+            "sensor_technology",
+            "sensor_connect_type",
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    "sensor_type",
+                    "sensor_vendor",
+                    "sensor_vendor_model",
+                    "sensor_technology",
+                    "sensor_connect_type",
+
+                )
+            })
+    )
+    list_filter = (
+            "sensor_type",
+            "sensor_technology",
+            "sensor_connect_type",
+            "sensor_vendor_model",
+    )
+    search_fields = (
+            "sensor_vendor",
+            "sensor_vendor_model",
+            "sensor_type",
+            "sensor_technology",
+    )
+
+
+class WarehouseAdmin(admin.ModelAdmin):
+    list_display = (
+            "add_date",
+            "serial_number",
+            "availability",
+            "terminal_model",
+            "sensor",
+            "delivery_date",
+            "client",
+            "comment",
+            "whom_issued",
+            "affiliation",
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    "serial_number",
+                    "availability",
+                    "terminal_model__id",
+                    "sensor__sensor_id",
+                    "delivery_date",
+                    "client__contragent_id",
+                    "comment",
+                    "whom_issued",
+                    "affiliation",
+                )
+            })
+    )
+    list_filter = (
+            "affiliation",
+            "delivery_date",
+            "availability",
+            "terminal_model",
+            "sensor",
+    )
+    autocomplete_fields = (
+        'terminal_model',
+        'sensor',
+        'client',
+    )
+
+
+
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)
 admin.site.register(GlobalLogging, GlobalLogAdmin)
@@ -711,3 +794,5 @@ admin.site.register(DevicesVendor, DeviceVendorAdmin)
 admin.site.register(MonitoringSystem, MonitoringSystemAdmin)
 admin.site.register(ObjectRetranslators, ObjectRetranslatorsAdmin)
 admin.site.register(GroupObjectRetrans, GroupObjectRetransAdmin)
+admin.site.register(ObjectSensors, ObjectSensorsAdmin)
+admin.site.register(EquipmentWarehouse, WarehouseAdmin)
