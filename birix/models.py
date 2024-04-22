@@ -1009,20 +1009,15 @@ class ObjectSensors(models.Model):
             verbose_name='Тип датчика',
             choices=SensorTypeChoices.choices,
             )
-    sensor_vendor = models.CharField(
-            max_length=255,
-            blank=True, 
+    sensor_model = models.ForeignKey(
+            'SensorBrands', 
+            models.DO_NOTHING, 
+            blank=True,
             null=True,
-            db_comment='производитель',
-            verbose_name='Производитель',
-            )
-    sensor_vendor_model = models.CharField(
-            max_length=255,
-            blank=True, 
-            null=True, 
-            db_comment='Модель датчика',
+            db_comment='Модель датчика к моделям',
             verbose_name='Модель датчика',
             )
+
     sensor_technology = models.IntegerField(
             db_comment='Подтип датчика:\r\n1аналоговый,2цифровой,\r\n3частотный',
             verbose_name='Подтип датчика',
@@ -1033,6 +1028,35 @@ class ObjectSensors(models.Model):
             blank=True, 
             null=True,
             db_comment='Тип подключения',
+            )
+    client = models.ForeignKey(
+            Contragents, 
+            models.DO_NOTHING,
+            blank=True, 
+            null=True,
+            db_comment='Связь с id Клиента',
+            verbose_name='Клиент',
+            )
+    sensor_serial = models.CharField(
+            unique=True,
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='Серийный номер датчика',
+            verbose_name='Серийный номер',
+            )
+    name_installer = models.CharField(
+            max_length=150, 
+            blank=True, 
+            null=True,
+            db_comment='Имя монтажника',
+            verbose_name='Имя монтажника',
+            )
+    installer_id = models.IntegerField(
+            blank=True,
+            null=True,
+            db_comment='Id монтажника',
+            verbose_name='ID монтажника',
             )
 
     class Meta:
@@ -1079,6 +1103,33 @@ class ObjectVehicles(models.Model):
     class Meta:
         managed = False
         db_table = 'object_vehicles'
+
+class SensorBrands(models.Model):
+    name = models.CharField(max_length=200, db_comment='Название модели')
+    sensor_vendor = models.ForeignKey('SensorVendor', models.DO_NOTHING, db_comment='Связь к Фирме изготовителя')
+
+    class Meta:
+        managed = False
+        db_table = 'sensor_brands'
+        db_table_comment = 'Таблица моделей датчиков'
+        verbose_name = 'Модель датчика'
+        verbose_name_plural = 'Модели датчиков'
+
+    def __str__(self):
+        return self.name
+
+class SensorVendor(models.Model):
+    name = models.CharField(max_length=200, db_comment='Имя производителя')
+
+    class Meta:
+        managed = False
+        db_table = 'sensor_vendor'
+        db_table_comment = 'Производители датчиков'
+        verbose_name = 'Производитель датчиков'
+        verbose_name_plural = 'Производители датчиков'
+
+    def __str__(self):
+        return self.name
 
 
 class SimCards(models.Model):

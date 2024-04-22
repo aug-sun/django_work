@@ -704,35 +704,43 @@ class GroupObjectRetransAdmin(admin.ModelAdmin):
 class ObjectSensorsAdmin(admin.ModelAdmin):
     list_display = (
             "sensor_type",
-            "sensor_vendor",
-            "sensor_vendor_model",
+            "sensor_model",
             "sensor_technology",
             "sensor_connect_type",
+            "client",
+            "sensor_serial",
+            "name_installer",
+            "installer_id",
             )
     add_fieldsets = (
             (None, {
                 'classes': ('wide',),
                 'fields': (
                     "sensor_type",
-                    "sensor_vendor",
-                    "sensor_vendor_model",
+                    "sensor_model",
                     "sensor_technology",
                     "sensor_connect_type",
+                    "client__ca_id",
+                    "sensor_serial",
+                    "name_installer",
+                    "installer_id",
 
                 )
             })
     )
     list_filter = (
             "sensor_type",
+            "sensor_model",
             "sensor_technology",
             "sensor_connect_type",
-            "sensor_vendor_model",
     )
     search_fields = (
-            "sensor_vendor",
-            "sensor_vendor_model",
+            "sensor_serial",
             "sensor_type",
             "sensor_technology",
+    )
+    autocomplete_fields = (
+        'client',
     )
 
 
@@ -778,7 +786,50 @@ class WarehouseAdmin(admin.ModelAdmin):
         'client',
     )
 
+class SensorBrandsAdmin(admin.ModelAdmin):
+    list_display = (
+            "name",
+            "sensor_vendor",
 
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    "sensor_vendor__id",
+                    "name",
+
+                )
+            })
+    )
+    list_filter = (
+            'sensor_vendor__id',
+            )
+
+
+    autocomplete_fields = (
+        'sensor_vendor',
+    )
+
+
+
+class SensorVendorAdmin(admin.ModelAdmin):
+    list_display = (
+            "name",
+
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    "name",
+
+                )
+            })
+    )
+    search_fields = (
+            "name",
+    )
 
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)
@@ -796,3 +847,5 @@ admin.site.register(ObjectRetranslators, ObjectRetranslatorsAdmin)
 admin.site.register(GroupObjectRetrans, GroupObjectRetransAdmin)
 admin.site.register(ObjectSensors, ObjectSensorsAdmin)
 admin.site.register(EquipmentWarehouse, WarehouseAdmin)
+admin.site.register(SensorBrands, SensorBrandsAdmin)
+admin.site.register(SensorVendor, SensorVendorAdmin)
