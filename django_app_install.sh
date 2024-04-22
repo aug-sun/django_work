@@ -28,7 +28,9 @@ EOF
 
 nvim .env
 
-cat > nginx.conf << 'EOF'
+internal_ip=$(hostname -I)
+
+cat > nginx.conf << EOF
 worker_processes 1;
 
 events { worker_connections 1024; }
@@ -36,10 +38,10 @@ events { worker_connections 1024; }
 http {
     server {
         listen 80;
-        server_name 0.0.0.0;
+        server_name $internal_ip;
 
         location / {
-            proxy_pass http://0.0.0.0:8000;
+            proxy_pass http://${internal_ip}:8000;
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
