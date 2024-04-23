@@ -27,8 +27,7 @@ URL_ATS=
 EOF
 
 nvim .env
-
-internal_ip=$(hostname -I)
+internal_ip=$(hostname -I | awk '{print $1}')
 
 cat > nginx.conf << EOF
 worker_processes 1;
@@ -36,20 +35,25 @@ worker_processes 1;
 events { worker_connections 1024; }
 
 http {
-    server {
-        listen 80;
-        server_name $internal_ip;
+  server {
+    listen 80;
+    server_name $internal_ip;
 
-        location / {
-            proxy_pass http://${internal_ip}:8000;
-            proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
-            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        }
+    location /static/ {
+        alias /django_work/static/;
     }
+
+    location / {
+      proxy_pass http://${internal_ip}:8000;
+EOF
+cat >> nginx.conf << 'EOF'
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    }
+  }
 }
 EOF
-
 
 cat > docker-compose.yaml << 'EOF'
 version: '3.9'
