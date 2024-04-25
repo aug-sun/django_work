@@ -30,28 +30,26 @@ nvim .env
 internal_ip=$(hostname -I | awk '{print $1}')
 
 cat > nginx.conf << EOF
-worker_processes 1;
+upstream django_work {
+    server web:8000;
+}
 
-events { worker_connections 1024; }
+server {
 
-http {
-  server {
     listen 80;
-    server_name $internal_ip;
-
-    location /static/ {
-        alias /django_work/static/;
-    }
 
     location / {
-      proxy_pass http://${internal_ip}:8000;
-EOF
-cat >> nginx.conf << 'EOF'
-      proxy_set_header Host $host;
-      proxy_set_header X-Real-IP $remote_addr;
-      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_pass http://django_work;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_redirect off;
     }
-  }
+
+    location /static/ {
+        alias /staticfiles/;
+    }
+
+
 }
 EOF
 
@@ -74,21 +72,26 @@ services:
       DB_PORT: ${DB_PORT}
       TOKEN_ATS: ${TOKEN_ATS}
       URL_ATS: ${URL_ATS}
-    command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
+    command: gunicorn suntel.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - static_volume:/staticfiles
+    expose:
+      - 8000
     networks:
       - django_network
-    ports:
-      - 8000:8000
 
   nginx:
     image: nginx:latest
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
+      - static_volume:/staticfiles
     ports:
       - 80:80
     networks:
       - django_network
+
+volumes:
+  static_volume:
 EOF
 
 sudo docker-compose --env-file .env up 
