@@ -14,3 +14,6 @@ ENV URL_ATS=${URL_ATS}
 
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
+
+CMD ["python", "manage.py", "collectstatic", "--no-input"]
+
