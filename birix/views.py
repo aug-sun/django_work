@@ -11,7 +11,7 @@ from django.views.generic.list import ListView
 from django.http import HttpResponse
 import pandas as pd
 from django.contrib.auth.decorators import user_passes_test
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -86,7 +86,9 @@ def calendar_call(request):
     else:
         return render(request, 'calendar.html')
 
+
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
 def download_excel(request):
     result = request.session.get('result')
     name_file = request.session.get('name_file')
@@ -97,7 +99,9 @@ def download_excel(request):
         response['Content-Disposition'] = f'attachment; filename={name_file}.xlsx'
         return response
 
+
 @login_required
+@user_passes_test(lambda u: u.is_superuser)
 def not_present_accounts(request):
     not_present = models.LoginUsers.objects.filter(
        account_status=1,
@@ -124,7 +128,7 @@ def home(request):
     " Главная страница сайта "
     return render(request, 'home.html')
 
-class UpdateUserView(UpdateView):
+class UpdateUserView(LoginRequiredMixin, UpdateView):
     model = models.LoginUsers
     success_message = 'Учётка успешно обновлена'
     fields = ['account_status']
@@ -176,13 +180,14 @@ def get_contragents_data(request):
                 
     return render(request, 'contragents.html', {'results': sorted_results})
 
-class ListLoginsView(ListView):
+class ListLoginsView(LoginRequiredMixin, ListView):
     model = models.LoginUsers
     template_name = 'list_logins.html'
     context_object_name = 'logins'
 
+
     
-class DetailLoginsView(DetailView):
+class DetailLoginsView(LoginRequiredMixin, DetailView):
     model = models.LoginUsers
     template_name = 'detail_login.html'
     fields = '__all__'
@@ -199,6 +204,10 @@ class DetailLoginsView(DetailView):
         context['logins_object'] = self.logins_object
         return context
         
+
+
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def objects(request):
     search_name = request.GET.get('search_name')
     search_imei = request.GET.get('search_imei')
@@ -241,9 +250,13 @@ def objects(request):
         return render(request, 'objects.html', {'objects': objects})
 
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def objects_detail(request, pk):
     object = get_object_or_404(models.CaObjects, pk=pk)
     return render(request, 'objects_detail.html', {'object': object})
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
 def get_stock(request):
     return render(request, 'get_stock.html')
