@@ -41,6 +41,9 @@ http {
 
 
     location / {
+      allow 192.168.1.1;
+      allow 192.168.1.2;
+      deny all;
 
       proxy_pass http://web:8000;
       proxy_set_header Host $host;
@@ -87,7 +90,8 @@ services:
       - django_network
 EOF
 
-sudo docker-compose --env-file .env up 
-
 echo "${GREEN}Django успешно установлен.${NC}"
 
+echo "${GREEN}Поменяйте разрешенные IP в nginx.conf${NC}"
+
+echo "${GREEN}Поменяйте название хоста в nginx.conf${NC}"

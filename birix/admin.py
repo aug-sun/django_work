@@ -4,8 +4,9 @@ from django import forms
 from django.http import HttpResponse
 from openpyxl import Workbook
 import ast
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-class ContragentsAdmin(admin.ModelAdmin):
+class ContragentsAdmin(LoginRequiredMixin, admin.ModelAdmin):
     list_display = (
             "ca_name", 
             "ca_shortname",
@@ -41,7 +42,7 @@ class ContragentsAdmin(admin.ModelAdmin):
     list_per_page = 20
 
 
-class LoginUsersAdmin(admin.ModelAdmin):
+class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
 
     list_display = (
             "login",
@@ -100,7 +101,7 @@ class LoginUsersAdmin(admin.ModelAdmin):
 
 
 
-class CaObjectsAdmin(admin.ModelAdmin):
+class CaObjectsAdmin(LoginRequiredMixin,admin.ModelAdmin):
     list_display = (
             "sys_mon",
             "object_name",
@@ -170,7 +171,7 @@ class CaObjectsAdmin(admin.ModelAdmin):
     get_sim.short_description = 'Симкарта'
 
 
-class GlobalLogAdmin(admin.ModelAdmin):
+class GlobalLogAdmin(LoginRequiredMixin,admin.ModelAdmin):
     list_display = (
             "section_type",
             "get_obj_client",
@@ -280,7 +281,7 @@ class GlobalLogAdmin(admin.ModelAdmin):
 
 
 
-class SimCardsAdmin(admin.ModelAdmin):
+class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
 
 
     actions = ['copy_record']
@@ -376,7 +377,7 @@ class SimCardsAdmin(admin.ModelAdmin):
     get_device.short_description = 'Серийный номер устройства'
 #    list_display_links = ('get_device',)
 
-class DevicesAdmin(admin.ModelAdmin):
+class DevicesAdmin(LoginRequiredMixin,admin.ModelAdmin):
 
 
     actions = ['copy_record']
@@ -458,7 +459,7 @@ class DevicesAdmin(admin.ModelAdmin):
     get_sim.short_description = 'Симкарта на устройстве'
 #    list_display_links = ('get_sim',)
 
-class DeviceBrandsAdmin(admin.ModelAdmin):
+class DeviceBrandsAdmin(LoginRequiredMixin,admin.ModelAdmin):
     list_display = (
             "name",
             "devices_vendor",
