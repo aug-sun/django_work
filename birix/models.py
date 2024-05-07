@@ -502,14 +502,15 @@ class Devices(models.Model):
     device_serial = models.CharField(
             max_length=100,
             blank=False, 
-            null=True, 
+            null=False, 
             db_comment='Серийный номер устройства',
-            verbose_name='Серийный номер устройства'
+            verbose_name='Серийный номер устройства',
+            unique=True
             )
     device_imei = models.CharField(
             max_length=60, 
             blank=False,
-            null=True, 
+            null=False, 
             db_comment='IMEI устройства',
             verbose_name='IMEI устройства',
             unique=True,
@@ -523,7 +524,7 @@ class Devices(models.Model):
             )
     terminal_date = models.DateTimeField(
             blank=False,
-            null=True, 
+            null=False, 
             db_comment='Дата программирования терминала',
             verbose_name='Дата программирования терминала',
             )
@@ -531,22 +532,22 @@ class Devices(models.Model):
             'DevicesBrands', 
             models.DO_NOTHING,
             blank=False, 
-            null=True, 
+            null=False, 
             db_comment='ID Модели устройства ',
             verbose_name='Модель устройства '
             )
     name_it = models.CharField(
             max_length=50, 
             blank=True,
-            null=True, 
+            null=False, 
             db_comment='Имя програмировавшего терминал',
             verbose_name='Имя програмировавшего терминал',
             )
     sys_mon = models.ForeignKey(
             'MonitoringSystem',
             models.DO_NOTHING,
-            blank=True,
-            null=True, 
+            blank=False,
+            null=False, 
             db_comment='ID системы мониторинга',
             verbose_name='Система мониторинга',
             )
@@ -554,7 +555,7 @@ class Devices(models.Model):
             Contragents, 
             models.DO_NOTHING,
             blank=False,
-            null=True, 
+            null=False, 
             db_comment='ID контрагента',
             verbose_name='Контрагент',
             )
@@ -569,7 +570,7 @@ class Devices(models.Model):
             AuthUser, 
             models.DO_NOTHING, 
             blank=False, 
-            null=True,
+            null=False,
             verbose_name='Программист',
             )
 
@@ -650,6 +651,66 @@ class DevicesCommands(models.Model):
         return self.command
 
 
+
+class DevicesDiagnostics(models.Model):
+
+    class DeviceBringChoices(models.IntegerChoices):
+        from_CLIENT = 0, 'от Клиента'
+        from_REPAIR = 1, 'после Ремонта'
+
+    class DeviceTransferChoices(models.IntegerChoices):
+        get_CLIENT = 0, 'к Клиенту'
+        get_REPAIR = 1, 'в Ремонт'
+
+    device = models.ForeignKey(
+            Devices, 
+            models.DO_NOTHING, 
+            db_comment='Отношение к терминалам',
+            verbose_name='Серийный номер терминала',
+            )
+    programmer = models.ForeignKey(
+            AuthUser,
+            models.DO_NOTHING, 
+            db_comment='Отношение к программистам',
+            verbose_name='Программист',
+            )
+    brought = models.IntegerField(
+            db_comment='Принесён:\r\n0-от клиента\r\n1-после ремонта',
+            verbose_name='Принесён от',
+            choices=DeviceBringChoices.choices,
+            )
+    comment = models.CharField(
+            max_length=300, 
+            db_comment='Коментарий',
+            verbose_name='Коментарий',
+            )
+    accept_date = models.DateTimeField(
+            db_comment='Дата приёма',
+            verbose_name='Дата приёма',
+            )
+    transfer_date = models.DateTimeField(
+            blank=True, 
+            null=True,
+            db_comment='Дата передачи',
+            verbose_name='Дата передачи',
+            )
+    whom_tranfer = models.IntegerField(
+            blank=True, 
+            null=True, 
+            db_comment='Куда отдан:\r\n0 - клиенту\r\n1 - в ремонт',
+            verbose_name='Куда отдан',
+            choices=DeviceTransferChoices.choices,
+            )
+
+    class Meta:
+        managed = False
+        db_table = 'devices_diagnostics'
+        db_table_comment = 'Диагностика терминалов'
+        verbose_name = 'Диагностика терминала'
+        verbose_name_plural = 'Диагностика терминалов'
+
+    def __str__(self):
+        return self.device.device_serial
 
 
 

@@ -832,6 +832,62 @@ class SensorVendorAdmin(admin.ModelAdmin):
             "name",
     )
 
+
+class DeviceDiagnosicAdmin(admin.ModelAdmin):
+    list_display = (
+            "device",
+            "get_imei",
+            "get_klient",
+            "programmer",
+            "brought",
+            "comment",
+            "accept_date",
+            "transfer_date",
+            "whom_tranfer",
+
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    "device",
+                    "programmer",
+                    "brought",
+                    "comment",
+                    "transfer_date",
+                    "whom_tranfer",
+
+                )
+            })
+    )
+    list_filter = (
+            'programmer',
+            'brought',
+            'whom_tranfer',
+            )
+    search_fields = (
+            "comment",
+    )
+    autocomplete_fields = (
+        'device',
+    )
+    date_hierarchy = 'transfer_date'
+
+
+    def get_klient(self, obj):
+        return obj.device.contragent.ca_name
+
+    get_klient.short_description = 'Клиент'
+
+    def get_imei(self, obj):
+        return obj.device.device_imei
+
+    get_imei.short_description = 'IMEI'
+
+#    readonly_fields = ('accept_date',)
+
+
+
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)
 admin.site.register(GlobalLogging, GlobalLogAdmin)
@@ -850,3 +906,4 @@ admin.site.register(ObjectSensors, ObjectSensorsAdmin)
 admin.site.register(EquipmentWarehouse, WarehouseAdmin)
 admin.site.register(SensorBrands, SensorBrandsAdmin)
 admin.site.register(SensorVendor, SensorVendorAdmin)
+admin.site.register(DevicesDiagnostics, DeviceDiagnosicAdmin)
