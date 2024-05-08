@@ -867,6 +867,8 @@ class DeviceDiagnosicAdmin(admin.ModelAdmin):
             )
     search_fields = (
             "comment",
+            "device",
+            "get_imei",
     )
     autocomplete_fields = (
         'device',

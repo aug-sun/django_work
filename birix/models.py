@@ -524,7 +524,7 @@ class Devices(models.Model):
             )
     terminal_date = models.DateTimeField(
             blank=False,
-            null=False, 
+            null=True, 
             db_comment='Дата программирования терминала',
             verbose_name='Дата программирования терминала',
             )
@@ -532,14 +532,14 @@ class Devices(models.Model):
             'DevicesBrands', 
             models.DO_NOTHING,
             blank=False, 
-            null=False, 
+            null=True, 
             db_comment='ID Модели устройства ',
             verbose_name='Модель устройства '
             )
     name_it = models.CharField(
             max_length=50, 
             blank=True,
-            null=False, 
+            null=True, 
             db_comment='Имя програмировавшего терминал',
             verbose_name='Имя програмировавшего терминал',
             )
@@ -547,7 +547,7 @@ class Devices(models.Model):
             'MonitoringSystem',
             models.DO_NOTHING,
             blank=False,
-            null=False, 
+            null=True, 
             db_comment='ID системы мониторинга',
             verbose_name='Система мониторинга',
             )
@@ -555,7 +555,7 @@ class Devices(models.Model):
             Contragents, 
             models.DO_NOTHING,
             blank=False,
-            null=False, 
+            null=True, 
             db_comment='ID контрагента',
             verbose_name='Контрагент',
             )
@@ -570,7 +570,7 @@ class Devices(models.Model):
             AuthUser, 
             models.DO_NOTHING, 
             blank=False, 
-            null=False,
+            null=True,
             verbose_name='Программист',
             )
 
