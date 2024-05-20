@@ -227,7 +227,7 @@ class LoginUsers(models.Model):
         managed = False
         db_table = 'Login_users'
         verbose_name = 'Логин пользователя'
-        verbose_name_plural = 'Логины пользователей'
+        verbose_name_plural = '2__Логины пользователей'
 
 
     def __str__(self):
@@ -479,7 +479,7 @@ class CaObjects(models.Model):
         managed = False
         db_table = 'ca_objects'
         verbose_name = 'Объект'
-        verbose_name_plural = 'Объекты'
+        verbose_name_plural = '1__Объекты'
 
 
     def __str__(self):
@@ -578,7 +578,7 @@ class Devices(models.Model):
         managed = False
         db_table = 'devices'
         verbose_name = 'Терминал'
-        verbose_name_plural = 'Терминалы'
+        verbose_name_plural = '3__Терминалы'
 
 
     def __str__(self):
@@ -604,7 +604,7 @@ class DevicesBrands(models.Model):
         managed = False
         db_table = 'devices_brands'
         verbose_name = 'Модель устройства'
-        verbose_name_plural = 'Модели устройств'
+        verbose_name_plural = '7__Модели устройств'
 
     def __str__(self):
         return self.name
@@ -645,7 +645,7 @@ class DevicesCommands(models.Model):
         managed = False
         db_table = 'devices_commands'
         verbose_name = 'Команда терминала'
-        verbose_name_plural = 'Команды терминалов'
+        verbose_name_plural = '8__Команды терминалов'
 
     def __str__(self):
         return self.command
@@ -707,7 +707,7 @@ class DevicesDiagnostics(models.Model):
         db_table = 'devices_diagnostics'
         db_table_comment = 'Диагностика терминалов'
         verbose_name = 'Диагностика терминала'
-        verbose_name_plural = 'Диагностика терминалов'
+        verbose_name_plural = '5__Диагностика терминалов'
 
     def __str__(self):
         return self.device.device_serial
@@ -721,7 +721,7 @@ class DevicesVendor(models.Model):
         managed = False
         db_table = 'devices_vendor'
         verbose_name = 'Фирма терминалов'
-        verbose_name_plural = 'Фирмы терминалов'
+        verbose_name_plural = '6__Фирмы терминалов'
 
     def __str__(self):
         return self.vendor_name
@@ -1287,7 +1287,7 @@ class SimCards(models.Model):
         managed = False
         db_table = 'sim_cards'
         verbose_name = 'Симкарта'
-        verbose_name_plural = 'Симкарты'
+        verbose_name_plural = '4__Симкарты'
 
     def __str__(self):
         return self.sim_iccid
