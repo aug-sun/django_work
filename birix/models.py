@@ -6,7 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-from birix.validators import validate_sim_tel_number
+from birix.validators import validate_sim_tel_number, validate_sim_iccid_number
 
 
 class CellOperator(models.Model):
@@ -1212,6 +1212,7 @@ class SimCards(models.Model):
             db_comment='ICCID',
             verbose_name='ICCID',
             unique=True,
+            validators=[validate_sim_iccid_number]
             )
     sim_tel_number = models.CharField(
             max_length=40, 

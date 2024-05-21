@@ -7,3 +7,7 @@ def validate_sim_tel_number(value):
             _('Неверно указан номер. Убедитесь, что номер содержит 11 символов, не содержит символ "+", и не содержит пробелов.'),
             code='invalid_sim_tel_number'
         )
+
+def validate_sim_iccid_number(value):
+    if len(value) > 19:
+        raise ValidationError('Длина iccid сим-карты не должна превышать 19 символов.')
