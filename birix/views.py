@@ -12,6 +12,7 @@ from django.http import HttpResponse
 import pandas as pd
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -259,4 +260,29 @@ def objects_detail(request, pk):
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def get_stock(request):
-    return render(request, 'get_stock.html')
+    all_terminals = models.EquipmentWarehouse.objects.filter(
+            terminal_model__isnull=False,
+            sensor=None          
+            ).values('terminal_model__name')
+    all_sensors = models.EquipmentWarehouse.objects.filter(
+            terminal_model=None,
+            sensor__isnull=False
+            ).values('sensor__name')
+    group_by_terminals = all_terminals.annotate(
+            count=Count('terminal_model__name')
+            ).order_by('-count')
+    group_by_sensors = all_sensors.annotate(
+            count=Count('sensor__name')
+            ).order_by('-count')
+    
+    return render(
+            request,
+            'get_stock.html',
+            {
+                'all_terminals': all_terminals,
+                'all_sensors': all_sensors,
+                'group_by_terminals': group_by_terminals,
+                'group_by_sensors': group_by_sensors
+
+            }
+            )

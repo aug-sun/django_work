@@ -967,6 +967,11 @@ class SensorBrandsAdmin(admin.ModelAdmin):
             'sensor_vendor__id',
             )
 
+    search_fields = (
+            "name",
+            "sensor_vendor__vendor_name",
+    )
+
 
     autocomplete_fields = (
         'sensor_vendor',

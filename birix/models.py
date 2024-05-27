@@ -817,7 +817,7 @@ class EquipmentWarehouse(models.Model):
             verbose_name='Модель терминала',
             )
     sensor = models.ForeignKey(
-            'ObjectSensors', 
+            'SensorBrands', 
             models.DO_NOTHING,
             blank=True,
             null=True,
