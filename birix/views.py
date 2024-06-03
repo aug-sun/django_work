@@ -260,6 +260,7 @@ def objects_detail(request, pk):
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def get_stock(request):
+
     all_terminals = models.EquipmentWarehouse.objects.filter(
             terminal_model__isnull=False,
             sensor=None          
@@ -268,21 +269,31 @@ def get_stock(request):
             terminal_model=None,
             sensor__isnull=False
             ).values('sensor__name')
-    group_by_terminals = all_terminals.annotate(
-            count=Count('terminal_model__name')
-            ).order_by('-count')
-    group_by_sensors = all_sensors.annotate(
-            count=Count('sensor__name')
-            ).order_by('-count')
-    
+
+    all_models_terminals = models.DevicesBrands.objects.all().values('name', "id")
+    all_models_sensors = models.SensorBrands.objects.all().values('name', "id")
+    terminals_count = {}
+    sensors_count = {}
+
+    for terminal in all_models_terminals:
+        terminals_count[terminal["name"]] = models.EquipmentWarehouse.objects.filter(terminal_model=terminal["id"]).count()
+
+    for sensor in all_models_sensors:
+        sensors_count[sensor["name"]] = models.EquipmentWarehouse.objects.filter(sensor=sensor["id"]).count()
+
+
+    sorted_terminals = sorted(terminals_count.items(), key=lambda x: x[1], reverse=True)
+
+    sorted_sensors = sorted(sensors_count.items(), key=lambda x: x[1], reverse=True)
+
     return render(
             request,
             'get_stock.html',
             {
                 'all_terminals': all_terminals,
                 'all_sensors': all_sensors,
-                'group_by_terminals': group_by_terminals,
-                'group_by_sensors': group_by_sensors
+                'group_by_terminals': dict(sorted_terminals),
+                'group_by_sensors': dict(sorted_sensors),
 
             }
             )

@@ -54,8 +54,8 @@
       
     {% if all_terminals %}
         <ul>
-        {% for terminal in group_by_terminals %}
-            <li>{{ terminal.terminal_model__name }} ({{ terminal.count }})</li>
+        {% for terminal, count in group_by_terminals.items %}
+            <li>{{ terminal }} ({{ count }}) </li>
         {% endfor %}
         </ul>
     {% else %}
@@ -78,8 +78,8 @@
       
     {% if all_sensors %}
         <ul>
-        {% for sensor in group_by_sensors %}
-            <li>{{ sensor.sensor__name }} ({{ sensor.count }})</li>
+        {% for sensor, count in group_by_sensors.items %}
+            <li>{{ sensor }} ({{ count }})</li>
         {% endfor %}
         </ul>
     {% else %}
