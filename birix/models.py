@@ -6,7 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
-from birix.validators import validate_sim_tel_number, validate_sim_iccid_number
+from birix.validators import validate_login, validate_password, validate_sim_tel_number, validate_sim_iccid_number
 
 
 class CellOperator(models.Model):
@@ -168,6 +168,7 @@ class LoginUsers(models.Model):
             blank=True, 
             null=False,
             verbose_name='Логин',
+            validators=[validate_login],
             )
     email = models.CharField(
             max_length=60, 
@@ -179,6 +180,7 @@ class LoginUsers(models.Model):
             blank=True, 
             null=False,
             verbose_name='Пароль',
+            validators=[validate_password],
             )
     date_create = models.DateField(
             blank=True,
