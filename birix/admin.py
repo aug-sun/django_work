@@ -512,7 +512,8 @@ class DevicesAdmin(LoginRequiredMixin,admin.ModelAdmin):
     list_display = (
             "device_serial",
             "device_imei",
-            "client_name",
+            "device_owner",
+#            "client_name",
             "terminal_date",
             "devices_brand",
             "sys_mon",
@@ -527,6 +528,7 @@ class DevicesAdmin(LoginRequiredMixin,admin.ModelAdmin):
             'itprogrammer',
             "devices_brand__devices_vendor",
             "sys_mon",
+            "device_owner",
             )
     search_fields = (
             "device_serial",
@@ -541,6 +543,7 @@ class DevicesAdmin(LoginRequiredMixin,admin.ModelAdmin):
                 'fields': (
                     'device_serial',
                     'device_imei',
+                    "device_owner",
                     'terminal_date',
                     'devices_brand',
                     'sys_mon',
@@ -555,6 +558,7 @@ class DevicesAdmin(LoginRequiredMixin,admin.ModelAdmin):
                 'fields': (
                     'device_serial',
                     'device_imei',
+                    "device_owner",
                     'terminal_date',
                     'devices_brand',
                     'sys_mon',

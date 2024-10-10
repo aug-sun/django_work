@@ -500,6 +500,10 @@ class ClientsInSystemMonitor(models.Model):
 
 
 class Devices(models.Model):
+    class Owner(models.IntegerChoices):
+        ME = 1, 'Мы'
+        CLIENT = 0, 'Клиент'
+
     device_id = models.AutoField(primary_key=True)
     device_serial = models.CharField(
             max_length=100,
@@ -575,6 +579,14 @@ class Devices(models.Model):
             null=True,
             verbose_name='Программист',
             )
+    device_owner = models.IntegerField(
+            blank=True,
+            null=True,
+            db_comment='Владелец терминала (мы или клиент)',
+            verbose_name='Мы или клиент',
+            choices=Owner.choices
+            )
+
 
     class Meta:
         managed = False
