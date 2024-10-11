@@ -156,6 +156,7 @@ class LoginUsers(models.Model):
         if_active = 1, 'Не подверждена но активирована'
         inactive = 0, "Заблокирована"
         verified = 2, 'Подверждена и активирована'
+        testing = 3, "Тестовая"
 
     client_name = models.CharField(
             max_length=200, 
