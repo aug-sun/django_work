@@ -1323,6 +1323,12 @@ class GroupObjectRetrans(models.Model):
             verbose_name='Ретрансляция',
             )
 
+    @property
+    def client_name(self):
+        if self.obj_id is None:
+            return "Клиент не найден"
+        return self.obj.contragent.ca_name
+
     class Meta:
         managed = False
         db_table = 'group_object_retrans'
