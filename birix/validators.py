@@ -1,3 +1,4 @@
+from os import walk
 import re
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
@@ -30,12 +31,7 @@ def validate_password(value):
             code='invalid_password_number'
             )
 def validate_login(value):
-    if '.' not in value:
-        raise ValidationError(
-            _('Неверный формат email.'),
-            code='invalid_email'
-            )
-    if '@' not in value:
+    if '.' not in value or '@' not in value:
         raise ValidationError(
             _('Неверный формат email.'),
             code='invalid_email'
