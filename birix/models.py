@@ -157,6 +157,7 @@ class LoginUsers(models.Model):
         if_active = 1, 'Не подверждена но активирована'
         inactive = 0, "Заблокирована"
         verified = 2, 'Подверждена и активирована'
+        testing = 3, "Тестовая"
 
     client_name = models.CharField(
             max_length=200, 
@@ -442,14 +443,6 @@ class CaObjects(models.Model):
             db_comment='Статус объекта ссылается к статусам',
             verbose_name='Статус объекта',
             )
-    object_add_date = models.DateTimeField(blank=True, null=True, db_comment='Дата добавления объекта')
-    object_last_message = models.DateTimeField(
-            blank=True,
-            null=True,
-            db_comment='Дата последнего сообщения',
-            verbose_name='Дата последнего сообщения',
-            )
-    object_margin = models.IntegerField(blank=True, null=True, db_comment='Надбавка к базовой цене объекта')
     owner_contragent = models.CharField(
             max_length=200, 
             blank=True, 
@@ -471,8 +464,6 @@ class CaObjects(models.Model):
             db_comment='идентификатор терминала',
             verbose_name='IMEI терминала',
             )
-    updated = models.DateTimeField(blank=True, null=True, db_comment='Когда изменён')
-    object_created = models.DateTimeField(blank=True, null=True, db_comment='Дата создания в системе мониторинга ')
     parent_id_sys = models.CharField(max_length=200, blank=True, null=True, db_comment='Id клиента в системе мониторинга')
     contragent = models.ForeignKey(
             Contragents, 
@@ -481,7 +472,6 @@ class CaObjects(models.Model):
             null=True,
             verbose_name='Контрагент как в 1С',
             )
-    ca_uid = models.CharField(max_length=100, blank=True, null=True, db_comment='Уникальный id контрагента')
 
     class Meta:
         managed = False
@@ -1327,6 +1317,12 @@ class GroupObjectRetrans(models.Model):
             db_comment='Айдишник ретранслятора',
             verbose_name='Ретрансляция',
             )
+
+    @property
+    def client_name(self):
+        if self.obj_id is None:
+            return "Клиент не найден"
+        return self.obj.contragent.ca_name
 
     class Meta:
         managed = False

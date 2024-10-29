@@ -10,6 +10,7 @@ import ast
 from django.core.exceptions import ValidationError
 from django.contrib.auth.mixins import LoginRequiredMixin
 import openpyxl
+from django.db.models.functions import Coalesce
 
 
 class ContragentsAdmin(LoginRequiredMixin, admin.ModelAdmin):
@@ -234,6 +235,7 @@ class CaObjectsAdmin(LoginRequiredMixin,admin.ModelAdmin):
                         Devices.objects.filter(device_imei=obj.imei).first().device_serial,
                         Devices.objects.filter(device_imei=obj.imei).first().devices_brand,
                         ]
+
     def get_sim(self, obj):
         if SimCards.objects.filter(terminal_imei=obj.imei).first():
             if obj.imei == None:
@@ -852,6 +854,7 @@ class GroupObjectRetransAdmin(admin.ModelAdmin):
     list_display = (
             "obj",
             "retr",
+            "client_name"
 
             )
     add_fieldsets = (
@@ -866,13 +869,18 @@ class GroupObjectRetransAdmin(admin.ModelAdmin):
     )
     list_filter = (
             "retr",
-            'obj__contragent_id'
             )
 
 
     autocomplete_fields = (
         'obj',
     )
+
+    search_fields = (
+            "obj__object_name",
+            "obj__contragent_id__ca_name"
+            )
+
 
 class ObjectSensorsAdmin(admin.ModelAdmin):
     list_display = (
