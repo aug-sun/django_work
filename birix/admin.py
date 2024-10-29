@@ -1,9 +1,13 @@
 from django.contrib import admin
+from django import forms
+from django.forms.fields import validators
+from birix.forms import NewLoginForm
 from birix.models import *
 from django import forms
 from django.http import HttpResponse
 from openpyxl import Workbook
 import ast
+from django.core.exceptions import ValidationError
 from django.contrib.auth.mixins import LoginRequiredMixin
 import openpyxl
 
@@ -76,6 +80,7 @@ class ContragentsAdmin(LoginRequiredMixin, admin.ModelAdmin):
             return response
 
 
+
 class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
 
     actions = ['download_excel',]
@@ -134,6 +139,9 @@ class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
     )
     autocomplete_fields = ('contragent',)
     list_per_page = 20
+
+
+
 
     def download_excel(self, request, queryset):
             workbook = openpyxl.Workbook()

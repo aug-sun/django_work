@@ -6,6 +6,7 @@
 #   * Remove `managed = False` lines if you wish to allow Django to create, modify, and delete the table
 # Feel free to rename the models, but don't rename db_table values or field names.
 from django.db import models
+from django.core.exceptions import ValidationError
 from birix.validators import validate_login, validate_password, validate_sim_tel_number, validate_sim_iccid_number
 
 
@@ -168,7 +169,6 @@ class LoginUsers(models.Model):
             blank=True, 
             null=False,
             verbose_name='Логин',
-            validators=[validate_login],
             )
     email = models.CharField(
             max_length=60, 
@@ -180,7 +180,6 @@ class LoginUsers(models.Model):
             blank=True, 
             null=False,
             verbose_name='Пароль',
-            validators=[validate_password],
             )
     date_create = models.DateField(
             blank=True,
@@ -223,6 +222,13 @@ class LoginUsers(models.Model):
             verbose_name='Статус аккаунта',
             choices=StatusChoices.choices,
             )
+    def clean(self):
+        super().clean()
+        login_str = str(self.login)
+        password_str = str(self.password)
+        if self.pk is None:
+            validate_login(login_str)
+            validate_password(password_str)
 
 
     class Meta:
