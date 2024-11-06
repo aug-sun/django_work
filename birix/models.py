@@ -8,6 +8,7 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from birix.validators import validate_login, validate_password, validate_sim_tel_number, validate_sim_iccid_number
+from birix.sendmail import sendmail
 
 
 class CellOperator(models.Model):
@@ -230,6 +231,7 @@ class LoginUsers(models.Model):
         if self.pk is None:
             validate_login(login_str)
             validate_password(password_str)
+            #sendmail(self.email, self.login, self.password)
 
 
     class Meta:
@@ -1018,6 +1020,13 @@ class MonitoringSystem(models.Model):
             null=True,
             db_comment='Базовая стоимость объекта для Контрагента',
             verbose_name='Базовая стоимость объекта для Контрагента',
+            )
+    mon_url = models.CharField(
+            max_length=200,
+            blank=True,
+            null=True,
+            db_comment='Адресс Системы мониторинга',
+            verbose_name='Адресс системы мониторинга',
             )
 
     class Meta:
