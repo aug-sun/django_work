@@ -8,7 +8,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 from birix.validators import validate_login, validate_password, validate_sim_tel_number, validate_sim_iccid_number
-from birix.sendmail import sendmail
 
 
 class CellOperator(models.Model):
@@ -231,7 +230,6 @@ class LoginUsers(models.Model):
         if self.pk is None:
             validate_login(login_str)
             validate_password(password_str)
-            #sendmail(self.email, self.login, self.password)
 
 
     class Meta:
