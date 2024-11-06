@@ -1019,6 +1019,13 @@ class MonitoringSystem(models.Model):
             db_comment='Базовая стоимость объекта для Контрагента',
             verbose_name='Базовая стоимость объекта для Контрагента',
             )
+    mon_url = models.CharField(
+            max_length=200,
+            blank=True,
+            null=True,
+            db_comment='Адресс Системы мониторинга',
+            verbose_name='Адресс системы мониторинга',
+            )
 
     class Meta:
         managed = False
