@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib import messages
 from django import forms
-from birix.sendmail import sendmail
+from birix.sendmail import sendmailclient, sendmailmanager
 from birix.models import *
 from django.http import HttpResponse
 from openpyxl import Workbook
@@ -83,7 +83,7 @@ class ContragentsAdmin(LoginRequiredMixin, admin.ModelAdmin):
 
 class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
 
-    actions = ['download_excel', 'send_access_mail']
+    actions = ['download_excel', 'send_access_mail_manager', 'send_access_mail_client']
 
     list_display = (
             "login",
@@ -141,7 +141,7 @@ class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
     list_per_page = 20
 
 # Отправка сообщений с данными для входа по чекбоксам
-    def send_access_mail(self, request, queryset):
+    def send_access_mail_manager(self, request, queryset):
         for obj in queryset:
             try:
                 manager_name = obj.contragent.key_manager
@@ -153,15 +153,35 @@ class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
             else:
                 try:
                 #Отправка менеджеру
-                    sendmail(manager_email, obj.login, obj.password, contragent_name, system_url, request.user.last_name)
+                    sendmailmanager(manager_email, obj.login, obj.password, contragent_name, system_url, request.user.last_name)
                     obj.account_status = 2
                     obj.save()
                 #Отправка создателю
-                    sendmail(request.user.email, obj.login, obj.password, contragent_name, system_url, request.user.last_name)
+                    sendmailmanager(request.user.email, obj.login, obj.password, contragent_name, system_url, request.user.last_name)
                 #Отправка начальству
                     if request.user.username != 'alexandr_master':
-                        sendmail('it5@suntel-nn.ru', obj.login, obj.password, contragent_name, system_url, request.user.last_name)
-                    messages.success(request, f'Письмо успешно отправлено для {obj}.')
+                        sendmailmanager('it5@suntel-nn.ru', obj.login, obj.password, contragent_name, system_url, request.user.last_name)
+                    messages.success(request, f'Письмо успешно отправлено для {contragent_name}.')
+                except Exception as e:
+                    messages.error(request, f'Ошибка при отправке письма: {e}.')
+        return None
+
+# Отправка сообщений с данными для входа по чекбоксам
+    def send_access_mail_client(self, request, queryset):
+        for obj in queryset:
+            try:
+                contragent_name = obj.contragent.ca_name
+                system_url = obj.system.mon_url
+                mon_system_name = obj.system.mon_sys_name
+            except Exception as e:
+                messages.error(request, f'Ошибка, у контрагента не указан менеджер.{e}.')
+            else:
+                try:
+                #Отправка клиенту
+                    sendmailclient(obj.email, obj.login, obj.password, mon_system_name, system_url)
+                    obj.account_status = 2
+                    obj.save()
+                    messages.success(request, f'Письмо успешно отправлено для {contragent_name}.')
                 except Exception as e:
                     messages.error(request, f'Ошибка при отправке письма: {e}.')
         return None
