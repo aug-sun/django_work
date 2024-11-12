@@ -161,7 +161,7 @@ class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
                 #Отправка начальству
                     if request.user.username != 'alexandr_master':
                         sendmailmanager('it5@suntel-nn.ru', obj.login, obj.password, contragent_name, system_url, request.user.last_name)
-                    messages.success(request, f'Письмо успешно отправлено для {contragent_name}.')
+                    messages.success(request, f'Письмо успешно отправлено менеджеру {manager_name} для {contragent_name}.')
                 except Exception as e:
                     messages.error(request, f'Ошибка при отправке письма: {e}.')
         return None
@@ -174,11 +174,13 @@ class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
                 system_url = obj.system.mon_url
                 mon_system_name = obj.system.mon_sys_name
             except Exception as e:
-                messages.error(request, f'Ошибка, у контрагента не указан менеджер.{e}.')
+                messages.error(request, f'Ошибка, неправильно заполнена форма клиента (в 1с).{e}.')
             else:
                 try:
                 #Отправка клиенту
                     sendmailclient(obj.email, obj.login, obj.password, mon_system_name, system_url)
+                #Отправка начальству
+                    sendmailclient('it5@suntel-nn.ru', obj.login, obj.password, contragent_name, system_url)
                     obj.account_status = 2
                     obj.save()
                     messages.success(request, f'Письмо успешно отправлено для {contragent_name}.')
