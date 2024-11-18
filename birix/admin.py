@@ -523,6 +523,10 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
     list_per_page = 20
     date_hierarchy = 'sim_date'
 
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.order_by('-sim_date')
+
     def get_device(self, obj):
         if Devices.objects.filter(device_imei=obj.terminal_imei).first():
             if obj.terminal_imei == Devices.objects.filter(device_imei=obj.terminal_imei).first().device_imei:
