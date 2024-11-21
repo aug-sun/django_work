@@ -1220,6 +1220,7 @@ class SimCards(models.Model):
         STOP = 2, 'Приостановлена'
         INITIAL_BLOCKING = 3, 'Первоночальная блокировка'
         DEF_STATUS = 4, 'Статус не известен'
+        SESON_STATUS = 5, 'Сезонная блокировка'
 
     sim_id = models.AutoField(primary_key=True)
     sim_iccid = models.CharField(

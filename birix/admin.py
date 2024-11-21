@@ -336,6 +336,7 @@ class CaObjectsAdmin(LoginRequiredMixin,admin.ModelAdmin):
 class GlobalLogAdmin(LoginRequiredMixin,admin.ModelAdmin):
     list_display = (
             "section_type",
+            "get_top_info",
             "get_obj_client",
             "field",
 #            "old_value",
@@ -381,6 +382,7 @@ class GlobalLogAdmin(LoginRequiredMixin,admin.ModelAdmin):
     list_per_page = 20
     date_hierarchy = 'change_time'
 
+
     def get_obj_client(self, obj):
         if obj.section_type == 'object':
             if CaObjects.objects.filter(id=obj.edit_id).first():
@@ -410,6 +412,22 @@ class GlobalLogAdmin(LoginRequiredMixin,admin.ModelAdmin):
                 return 'Деактивирован'
             else:
                 return obj.old_value
+
+        if obj.section_type == 'sim_card' and obj.field == 'status':
+            if obj.old_value == "0":
+                return 'Списана'
+            if obj.old_value == "1":
+                return 'Активна'
+            if obj.old_value == "2":
+                return 'Приостановлена'
+            if obj.old_value == "3":
+                return 'Первичная блокировка'
+            if obj.old_value == "4":
+                return 'Статус не известен'
+            if obj.old_value == "5":
+                return 'Сезонная блокировка'
+            else:
+                return obj.old_value
         else:
             return obj.old_value
 
@@ -433,12 +451,43 @@ class GlobalLogAdmin(LoginRequiredMixin,admin.ModelAdmin):
                 return 'Деактивирован'
             else:
                 return obj.new_value
+
+        if obj.section_type == 'sim_card' and obj.field == 'status':
+            if obj.new_value == "0":
+                return 'Списана'
+            if obj.new_value == "1":
+                return 'Активна'
+            if obj.new_value == "2":
+                return 'Приостановлена'
+            if obj.new_value == "3":
+                return 'Первичная блокировка'
+            if obj.new_value == "4":
+                return 'Статус не известен'
+            if obj.new_value == "5":
+                return 'Сезонная блокировка'
+            else:
+                return obj.new_value
         else:
             return obj.new_value
+
+    def get_top_info(self, obj):
+        info_id = obj.edit_id
+        section = obj.section_type
+
+        if section == "sim_card":
+            sim = SimCards.objects.filter(sim_id=info_id).first()
+            if sim:
+                return sim.sim_iccid 
+
+        if section == "object":
+            obj = CaObjects.objects.filter(id=info_id).first()
+            if obj:
+                return obj.object_name
 
     get_obj_client.short_description = "Контрагент"
     get_status_old.short_description = "Старое значение"
     get_status_new.short_description = "Новое значение"
+    get_top_info.short_description = "Детализация"
 
 
 
