@@ -745,6 +745,7 @@ class DjangoAdminLog(models.Model):
     content_type = models.ForeignKey('DjangoContentType', models.DO_NOTHING, blank=True, null=True, verbose_name="Тип")
     user = models.ForeignKey(AuthUser, models.DO_NOTHING, verbose_name='Пользователь')
 
+
     class Meta:
         managed = False
         db_table = 'django_admin_log'
@@ -1301,7 +1302,12 @@ class SimCards(models.Model):
             db_comment='ID сотрудника програмировавшего терминал',
             verbose_name='Сотрудник активировавший СИМ',
             )
-
+    block_start = models.DateTimeField(
+            blank=True, 
+            null=True, 
+            db_comment='Дата блокировки сим',
+            verbose_name='Дата блокировки сим',
+            )
     class Meta:
         managed = False
         db_table = 'sim_cards'
