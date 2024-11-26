@@ -10,6 +10,8 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.mixins import LoginRequiredMixin
 import openpyxl
 from django.db.models.functions import Coalesce
+from django.db.models import Q
+from itertools import chain
 
 
 class ContragentsAdmin(LoginRequiredMixin, admin.ModelAdmin):
@@ -470,6 +472,8 @@ class GlobalLogAdmin(LoginRequiredMixin,admin.ModelAdmin):
         else:
             return obj.new_value
 
+
+
     def get_top_info(self, obj):
         info_id = obj.edit_id
         section = obj.section_type
@@ -483,6 +487,8 @@ class GlobalLogAdmin(LoginRequiredMixin,admin.ModelAdmin):
             obj = CaObjects.objects.filter(id=info_id).first()
             if obj:
                 return obj.object_name
+
+
 
     get_obj_client.short_description = "Контрагент"
     get_status_old.short_description = "Старое значение"
@@ -506,7 +512,8 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "terminal_imei",
             'itprogrammer',
             'get_device',
-            'status'
+            'status',
+            'block_start'
 
             )
 
@@ -517,7 +524,7 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
             'itprogrammer',
             'status',
             "contragent",
-
+            "block_start",
             )
     search_fields = (
             "sim_iccid",
@@ -528,6 +535,7 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "sim_date",
             "contragent__ca_name",
             "terminal_imei",
+            "block_start",
             )
     fieldsets = (
             (None, {
@@ -542,6 +550,7 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
                     "terminal_imei",
                     'itprogrammer',
                     'status',
+                    'block_start'
                 )
             }),
     )
@@ -559,6 +568,7 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
                     "terminal_imei",
                     'itprogrammer',
                     'status',
+                    'block_start',
 
                 )
             })
@@ -590,7 +600,7 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
             worksheet.title = "SimCards Data"
 
             # Write headers
-            header_row = ["sim_iccid", "sim_tel_number", "client_name", "sim_cell_operator", "sim_owner", "sim_date", "contragent", "terminal_imei", "itprogrammer", "status"]
+            header_row = ["sim_iccid", "sim_tel_number", "client_name", "sim_cell_operator", "sim_owner", "sim_date", "contragent", "terminal_imei", "itprogrammer", "status", "block_start"]
             for col_num, header in enumerate(header_row, 1):
                 worksheet.cell(row=1, column=col_num).value = header
 
@@ -607,6 +617,7 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
                 worksheet.cell(row=row_num, column=8).value = str(sim.terminal_imei)
                 worksheet.cell(row=row_num, column=9).value = str(sim.itprogrammer)
                 worksheet.cell(row=row_num, column=10).value = str(sim.status)
+                worksheet.cell(row=row_num, column=10).value = str(sim.block_start)
                 row_num += 1
 
             # Set content type and attachment filename
