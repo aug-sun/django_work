@@ -523,7 +523,6 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "sim_date",
             'itprogrammer',
             'status',
-            "contragent",
             "block_start",
             )
     search_fields = (
@@ -550,7 +549,6 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
                     "terminal_imei",
                     'itprogrammer',
                     'status',
-                    'block_start'
                 )
             }),
     )
@@ -568,7 +566,6 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
                     "terminal_imei",
                     'itprogrammer',
                     'status',
-                    'block_start',
 
                 )
             })
