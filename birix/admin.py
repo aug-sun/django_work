@@ -1,17 +1,10 @@
 from django.contrib import admin
 from django.contrib import messages
-from django import forms
 from birix.sendmail import sendmailclient, sendmailmanager
 from birix.models import *
 from django.http import HttpResponse
-from openpyxl import Workbook
-import ast
-from django.core.exceptions import ValidationError
 from django.contrib.auth.mixins import LoginRequiredMixin
 import openpyxl
-from django.db.models.functions import Coalesce
-from django.db.models import Q
-from itertools import chain
 
 
 class ContragentsAdmin(LoginRequiredMixin, admin.ModelAdmin):
