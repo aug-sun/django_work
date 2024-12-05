@@ -1234,7 +1234,6 @@ class InfoServObjAdmin(admin.ModelAdmin):
             })
     )
     list_filter = (
-                    "serv_obj_sys_mon",
                     "info_obj_serv",
                     "subscription_start",
                     "subscription_end",
@@ -1260,6 +1259,9 @@ class InfoServObjAdmin(admin.ModelAdmin):
                     "sys_password",
     )
     date_hierarchy = 'subscription_start'
+    autocomplete_fields = (
+        'serv_obj_sys_mon',
+    )
 
 
 admin.site.register(Contragents, ContragentsAdmin)
