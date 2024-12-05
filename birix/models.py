@@ -1238,7 +1238,7 @@ class SimCards(models.Model):
             blank=True, 
             null=True, 
             db_comment='телефонный номер сим',
-            verbose_name='Телефонный номер сим',
+            verbose_name='Телефонный номер',
             validators=[validate_sim_tel_number]
             )
     client_name = models.CharField(
@@ -1283,7 +1283,7 @@ class SimCards(models.Model):
             blank=True,
             null=True,
             db_comment='IMEI терминала в который вставлена симка',
-            verbose_name='IMEI терминала в котором симка',
+            verbose_name='IMEI терм.',
             )
     contragent = models.ForeignKey(
             Contragents, 
@@ -1300,7 +1300,7 @@ class SimCards(models.Model):
             blank=True,
             null=True, 
             db_comment='ID сотрудника програмировавшего терминал',
-            verbose_name='Сотрудник активировавший СИМ',
+            verbose_name='Сотрудник',
             )
     block_start = models.DateTimeField(
             blank=True, 
@@ -1344,3 +1344,54 @@ class GroupObjectRetrans(models.Model):
         db_table_comment = 'Таблица для сведения объектов и ретрансляторов'
         verbose_name = 'Привязка объектов к ретрансляторам'
         verbose_name_plural = 'Привязки объектов к рентрансляторам'
+
+
+class InfoServObj(models.Model):
+
+    class Counter(models.IntegerChoices):
+        FLASH = 0, 'Мгновенно'
+        DAY = 1, 'За предыдущий день'
+        WEEK = 2, 'За неделю'
+        MONTH = 3, 'За предыдущий месяц'
+
+    class Stelth(models.IntegerChoices):
+        AUTO = 0, 'Отправка без проверки'
+        CHECK = 1, 'Проверить ИТ специалистом'
+
+    serv_obj_id = models.AutoField(primary_key=True, db_comment='ID подписки')
+    serv_obj_sys_mon = models.ForeignKey(CaObjects, models.DO_NOTHING, db_comment='Внутренний ID объекта\r\nБазы данных из СМ',verbose_name='Объект')
+    info_obj_serv = models.ForeignKey('InformationServices', models.DO_NOTHING, db_comment='ID ведёт сервисам', verbose_name='Сервис')
+    subscription_start = models.DateTimeField(db_comment='Время начала подписки', verbose_name='Время начала подписки')
+    subscription_end = models.DateTimeField(blank=True, null=True, db_comment='Время окончания подписки', verbose_name='Время окончания подписки')
+    tel_num_user = models.CharField(max_length=11, blank=True, null=True, db_comment='Телефонный номер с которого созданна услуга', verbose_name='Телефонный номер на кого подписка')
+    service_counter = models.IntegerField(db_comment='СЧЁТЧИК услуг\r\n0- мгновенно\r\n1-раз в день\r\n2-раз в неделю\r\n3-раз в месяц', verbose_name='Переодичность сработки отчёта',choices=Counter.choices)
+    stealth_type = models.IntegerField(db_comment='0 - автоматический\r\n1 - с проверкой', verbose_name='Автоматизм отправки', choices=Stelth.choices)
+    monitoring_sys = models.ForeignKey('MonitoringSystem', models.DO_NOTHING, db_column='monitoring_sys', db_comment='Система мониторинга', verbose_name='Система мониторинга')
+    sys_id_obj = models.CharField(max_length=100, db_comment='ID объекта в системе мониторинга', verbose_name='ИД в системе мониторинга')
+    sys_login = models.CharField(max_length=100, db_comment='Логин пользователя от системы мониторинга',verbose_name='Логин пользователя')
+    sys_password = models.CharField(max_length=100, db_comment='Пароль пользователя', verbose_name='Пароль пользователя')
+
+    class Meta:
+        managed = False
+        db_table = 'info_serv_obj'
+        db_table_comment = 'Объекты с информационными сервисами'
+        verbose_name = 'Отчёт'
+        verbose_name_plural = 'Отчёт'
+
+    def __str__(self):
+        return self.sys_id_obj
+
+class InformationServices(models.Model):
+    serv_id = models.AutoField(primary_key=True, db_comment='ID Сервиса')
+    serv_name = models.CharField(unique=True, max_length=100, db_comment='Название сервиса', verbose_name='Название сервиса')
+    serv_price = models.IntegerField(blank=True, null=True, db_comment='Цена за сервис', verbose_name='Цена за сервис')
+
+    class Meta:
+        managed = False
+        db_table = 'information_services'
+        db_table_comment = 'Таблица для информационных сервисов Клиентов'
+        verbose_name = 'Информационный сервис'
+        verbose_name_plural = 'Информационные сервисы'
+
+    def __str__(self):
+        return self.serv_name
