@@ -239,6 +239,7 @@ class CaObjectsAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "imei",
             "get_device",
             "get_sim",
+            "sys_mon_object_id"
             )
 
     list_filter = (
