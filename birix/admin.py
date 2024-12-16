@@ -1,18 +1,13 @@
 from django.contrib import admin
 from django.contrib import messages
-from django import forms
 from birix.sendmail import sendmailclient, sendmailmanager
 from birix.models import *
 from django.http import HttpResponse
-from openpyxl import Workbook
-import ast
-from django.core.exceptions import ValidationError
 from django.contrib.auth.mixins import LoginRequiredMixin
 import openpyxl
-from django.db.models.functions import Coalesce
-from django.db.models import Q
-from itertools import chain
-
+from datetime import datetime, timedelta
+from django.utils.html import format_html
+import pytz
 
 class ContragentsAdmin(LoginRequiredMixin, admin.ModelAdmin):
 
@@ -244,6 +239,7 @@ class CaObjectsAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "imei",
             "get_device",
             "get_sim",
+            "sys_mon_object_id"
             )
 
     list_filter = (
@@ -341,8 +337,6 @@ class GlobalLogAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "get_top_info",
             "get_obj_client",
             "field",
-#            "old_value",
-#            "new_value",
             "get_status_old",
             "get_status_new",
             "change_time",
@@ -361,8 +355,6 @@ class GlobalLogAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "section_type",
             "edit_id",
             "field",
-            "old_value",
-            "new_value",
             "change_time",
             "sys_id",
             "action",
@@ -506,15 +498,15 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "sim_iccid",
             "sim_tel_number",
             "sim_cell_operator",
-            "sim_owner",
             "sim_date",
             "contragent",
-            "terminal_imei",
             'itprogrammer',
-            'get_device',
             'status',
-            'block_start'
-
+            'block_start',
+            "get_end_date",
+            "sim_owner",
+            "terminal_imei",
+            'get_device',
             )
 
     list_filter = (
@@ -523,7 +515,6 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "sim_date",
             'itprogrammer',
             'status',
-            "contragent",
             "block_start",
             )
     search_fields = (
@@ -550,7 +541,6 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
                     "terminal_imei",
                     'itprogrammer',
                     'status',
-                    'block_start'
                 )
             }),
     )
@@ -568,14 +558,10 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
                     "terminal_imei",
                     'itprogrammer',
                     'status',
-                    'block_start',
 
                 )
             })
     )
-    # raw_id_fields = (
-    #     'contragent',
-    # )
     autocomplete_fields = (
         'contragent',
     )
@@ -591,8 +577,29 @@ class SimCardsAdmin(LoginRequiredMixin,admin.ModelAdmin):
             if obj.terminal_imei == Devices.objects.filter(device_imei=obj.terminal_imei).first().device_imei:
                 return Devices.objects.filter(device_imei=obj.terminal_imei).first().device_serial
 
-    get_device.short_description = 'Серийный номер устройства'
-#    list_display_links = ('get_device',)
+    def get_end_date(self, obj):
+        if obj.block_start:
+            # Получаем текущую дату с учетом временной зоны
+            current_date = datetime.now(pytz.utc)  # Используем UTC или вашу локальную временную зону
+            # Приводим block_start к UTC, если он offset-aware
+            if obj.block_start.tzinfo is None:
+                block_start = obj.block_start.replace(tzinfo=pytz.utc)  # Присваиваем временную зону
+            else:
+                block_start = obj.block_start
+
+            # Вычисляем дату окончания блокировки
+            end_date = block_start + timedelta(days=180)  # 180 дней = 6 месяцев
+            
+            # Проверяем, превышает ли дата окончания текущую дату
+            if end_date < current_date:
+                return format_html('<span style="color: red;">{}</span>', end_date.strftime('%Y-%m-%d'))
+            
+            return end_date.strftime('%Y-%m-%d')
+        
+        return None
+
+    get_device.short_description = 'Сер. терм'
+    get_end_date.short_description = 'Окончание блокировки'
 
     def download_excel(self, request, queryset):
             workbook = openpyxl.Workbook()
@@ -1193,6 +1200,68 @@ class DeviceDiagnosicAdmin(admin.ModelAdmin):
 
 #    readonly_fields = ('accept_date',)
 
+class InfoServObjAdmin(admin.ModelAdmin):
+    list_display = (
+            "serv_obj_sys_mon",
+            "info_obj_serv",
+            "subscription_start",
+            "subscription_end",
+            "tel_num_user",
+            "service_counter",
+            "stealth_type",
+            "monitoring_sys",
+            "sys_id_obj",
+            "sys_login",
+            "sys_password",
+
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    "serv_obj_sys_mon",
+                    "info_obj_serv",
+                    "subscription_start",
+                    "subscription_end",
+                    "tel_num_user",
+                    "service_counter",
+                    "stealth_type",
+                    "monitoring_sys",
+                    "sys_id_obj",
+                    "sys_login",
+                    "sys_password",
+                )
+            })
+    )
+    list_filter = (
+                    "info_obj_serv",
+                    "subscription_start",
+                    "subscription_end",
+                    "tel_num_user",
+                    "service_counter",
+                    "stealth_type",
+                    "monitoring_sys",
+                    "sys_id_obj",
+                    "sys_login",
+                    "sys_password",
+            )
+    search_fields = (
+                    "serv_obj_sys_mon",
+                    "info_obj_serv",
+                    "subscription_start",
+                    "subscription_end",
+                    "tel_num_user",
+                    "service_counter",
+                    "stealth_type",
+                    "monitoring_sys",
+                    "sys_id_obj",
+                    "sys_login",
+                    "sys_password",
+    )
+    date_hierarchy = 'subscription_start'
+    autocomplete_fields = (
+        'serv_obj_sys_mon',
+    )
 
 
 admin.site.register(Contragents, ContragentsAdmin)
@@ -1209,8 +1278,10 @@ admin.site.register(DevicesVendor, DeviceVendorAdmin)
 admin.site.register(MonitoringSystem, MonitoringSystemAdmin)
 admin.site.register(ObjectRetranslators, ObjectRetranslatorsAdmin)
 admin.site.register(GroupObjectRetrans, GroupObjectRetransAdmin)
-admin.site.register(ObjectSensors, ObjectSensorsAdmin)
-admin.site.register(EquipmentWarehouse, WarehouseAdmin)
-admin.site.register(SensorBrands, SensorBrandsAdmin)
-admin.site.register(SensorVendor, SensorVendorAdmin)
+#admin.site.register(ObjectSensors, ObjectSensorsAdmin)
+#admin.site.register(EquipmentWarehouse, WarehouseAdmin)
+#admin.site.register(SensorBrands, SensorBrandsAdmin)
+#admin.site.register(SensorVendor, SensorVendorAdmin)
 admin.site.register(DevicesDiagnostics, DeviceDiagnosicAdmin)
+
+admin.site.register(InfoServObj, InfoServObjAdmin)
