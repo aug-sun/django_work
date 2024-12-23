@@ -1346,6 +1346,150 @@ class GroupObjectRetrans(models.Model):
         verbose_name_plural = 'Привязки объектов к рентрансляторам'
 
 
+class OnecContracts(models.Model):
+    contract_id = models.AutoField(primary_key=True)
+    name_contract = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='НаименованиеДоговора',
+            verbose_name='Наименование договора',
+            )
+    contract_number = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='НомерДоговора',
+            verbose_name='Номер договора',
+            )
+    contract_date = models.DateField(
+            blank=True, 
+            null=True, 
+            db_comment='ДатаДоговора',
+            verbose_name='Дата договора',
+            )
+    contract_status = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='Статус',
+            verbose_name='Статус',
+            )
+    organization = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='Организация',
+            verbose_name='Организация',
+            )
+    partner = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='Партнер',
+            verbose_name='Партнер',
+            )
+    counterparty = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='Контрагент',
+            verbose_name='Контрагент',
+            )
+    contract_commencement_date = models.DateField(
+            blank=True, 
+            null=True, 
+            db_comment='ДатаНачалаДоговора',
+            verbose_name='Дата начала договора',
+            )
+    contract_expiration_date = models.DateField(
+            blank=True, 
+            null=True, 
+            db_comment='ДатаОкончанияДоговора',
+            verbose_name='Дата окончания договора',
+            )
+    contract_purpose = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='Цель',
+            verbose_name='Цель',
+            )
+    type_calculations = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='ВидРасчетов',
+            verbose_name='Вид расчетов',
+            )
+    category = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='Категория',
+            verbose_name='Категория',
+            )
+    manager = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='Менеджер',
+            verbose_name='Менерджер',
+            )
+    subdivision = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='Подразделение',
+            verbose_name='Подразделение',
+            )
+    contact_person = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='КонтактноеЛицо',
+            verbose_name='Контактное лицо',
+            )
+    organization_bank_account = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='БанковскийСчетОрганизации',
+            verbose_name='Банковский счет организации',
+            )
+    counterparty_bank_account = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='БанковскийСчетКонтрагента',
+            verbose_name='Банковский счет контрагента',
+            )
+    detailed_calculations = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='ДетализацияРасчетов',
+            verbose_name='Детализация расчетов',
+            )
+    unique_partner_identifier = models.CharField(
+            max_length=100,
+            blank=True,
+            null=True,
+            db_comment='УникальныйИдентификаторПартнера',
+            )
+    ok_desk_id = models.IntegerField(
+            blank=True,
+            null=True,
+            db_comment='ID в ОК-деск',
+            verbose_name='ID в ОК-деск',
+            )
+    class Meta:
+        managed = False
+        db_table = 'onec_contracts'
+        verbose_name = 'Договоры'
+        verbose_name_plural = 'Договоры'
+
+
 class InfoServObj(models.Model):
 
     class Counter(models.IntegerChoices):
