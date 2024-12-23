@@ -8,6 +8,8 @@ import openpyxl
 from datetime import datetime, timedelta
 from django.utils.html import format_html
 import pytz
+from django.urls import reverse
+from django.utils.safestring import mark_safe
 
 class ContragentsAdmin(LoginRequiredMixin, admin.ModelAdmin):
 
@@ -239,7 +241,8 @@ class CaObjectsAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "imei",
             "get_device",
             "get_sim",
-            "sys_mon_object_id"
+            "sys_mon_object_id",
+            "upload_button",
             )
 
     list_filter = (
@@ -299,6 +302,10 @@ class CaObjectsAdmin(LoginRequiredMixin,admin.ModelAdmin):
     get_device.short_description = 'Терминал'
     get_sim.short_description = 'Симкарта'
 
+
+    def upload_button(self, obj):
+        return mark_safe(f'<a class="button" href="{reverse("upload_file", args=[obj.id])}">Загрузить</a>')
+    upload_button.short_description = 'Загрузить файл'
 
     def download_excel(self, request, queryset):
             workbook = openpyxl.Workbook()
@@ -1200,6 +1207,77 @@ class DeviceDiagnosicAdmin(admin.ModelAdmin):
 
 #    readonly_fields = ('accept_date',)
 
+
+class OnecContractsAdmin(admin.ModelAdmin):
+    list_display = (
+            "name_contract",
+            "contract_number",
+            "contract_date",
+            "contract_status",
+            "organization",
+            "counterparty",
+            "contract_purpose",
+            "type_calculations",
+            "category",
+            "manager",
+            "subdivision",
+            "contact_person",
+            "detailed_calculations",
+            "ok_desk_id",
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    "name_contract",
+                    "contract_number",
+                    "contract_date",
+                    "contract_status",
+                    "organization",
+                    "partner",
+                    "counterparty",
+                    "contract_commencement_date",
+                    "contract_expiration_date",
+                    "contract_purpose",
+                    "type_calculations",
+                    "category",
+                    "manager",
+                    "subdivision",
+                    "contact_person",
+                    "organization_bank_account",
+                    "counterparty_bank_account",
+                    "detailed_calculations",
+                    "unique_partner_identifier",
+                    "unique_counterparty_identifier",
+                    "ok_desk_id",
+                )
+            })
+    )
+    list_filter = (
+
+            "contract_date",
+            "contract_status",
+ 
+            "contract_purpose",
+            "type_calculations",
+            "category",
+            "manager",
+            )
+    search_fields = (
+            "name_contract",
+            "contract_number",
+            "contract_status",
+            "organization",
+            "counterparty",
+            "manager",
+            "subdivision",
+            "contact_person",
+            "organization_bank_account",
+            "counterparty_bank_account",
+            "detailed_calculations",
+    )
+
+
 class InfoServObjAdmin(admin.ModelAdmin):
     list_display = (
             "serv_obj_sys_mon",
@@ -1283,5 +1361,5 @@ admin.site.register(GroupObjectRetrans, GroupObjectRetransAdmin)
 #admin.site.register(SensorBrands, SensorBrandsAdmin)
 #admin.site.register(SensorVendor, SensorVendorAdmin)
 admin.site.register(DevicesDiagnostics, DeviceDiagnosicAdmin)
-
+admin.site.register(OnecContracts, OnecContractsAdmin)
 admin.site.register(InfoServObj, InfoServObjAdmin)
