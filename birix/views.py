@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Count
 
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
 def calendar_call(request):
