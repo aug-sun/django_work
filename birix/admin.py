@@ -2,14 +2,16 @@ from django.contrib import admin
 from django.contrib import messages
 from birix.sendmail import sendmailclient, sendmailmanager
 from birix.models import *
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 import openpyxl
 from datetime import datetime, timedelta
 from django.utils.html import format_html
 import pytz
-from django.urls import reverse
+from django.urls import reverse, path
 from django.utils.safestring import mark_safe
+
+
 
 class ContragentsAdmin(LoginRequiredMixin, admin.ModelAdmin):
 
@@ -711,6 +713,38 @@ class DevicesAdmin(LoginRequiredMixin,admin.ModelAdmin):
     )
     list_per_page = 20
     date_hierarchy = 'terminal_date'
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "devices_brand":
+            kwargs["queryset"] = DevicesBrands.objects.all().order_by('name')
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def get_urls(self):
+        urls = super().get_urls()
+        custom_urls = [
+            path('save_form/', self.admin_site.admin_view(self.save_form), name='save_form'),
+        ]
+        return custom_urls + urls
+
+    def handle_save_form(self, request):
+        if request.method == "POST":
+            data = request.POST.dict()
+            data.pop('device_serial', None)
+            data.pop('device_imei', None)
+            request.session['form_data'] = data
+            return JsonResponse({'success': True})
+        return JsonResponse({'success': False})
+
+    def add_view(self, request, form_url='', extra_context=None):
+        if request.method == "GET" and 'form_data' in request.session:
+            form_data = request.session.pop('form_data')
+            form = self.get_form(request)(initial=form_data)
+        else:
+            form = self.get_form(request)()
+        
+        return super().add_view(request, form_url, extra_context={'form': form})
+
+
 
     def get_sim(self, obj):
         if SimCards.objects.filter(terminal_imei=obj.device_imei).first():
