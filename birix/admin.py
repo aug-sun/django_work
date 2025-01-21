@@ -367,6 +367,8 @@ class GlobalLogAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "change_time",
             "sys_id",
             "action",
+            "new_value",
+            "old_value",
             )
     fieldsets = (
             (None, {
@@ -1376,6 +1378,58 @@ class InfoServObjAdmin(admin.ModelAdmin):
     )
 
 
+class InfoServTarifsAdmin(admin.ModelAdmin):
+    list_display = (
+            "name",
+            "price",
+            "count",
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    "name",
+                    "price",
+                    "count",
+                )
+            })
+    )
+
+
+class InfoServTarifClientAdmin(admin.ModelAdmin):
+    list_display = (
+            "tarif",
+            "client",
+            "start_tarif",
+            "end_tarif",
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    "tarif",
+                    "client",
+                    "start_tarif",
+                    "end_tarif",
+                )
+            })
+    )
+
+    list_filter = (
+                    "tarif",
+                    "start_tarif",
+                    "end_tarif",
+            )
+    search_fields = (
+                    "tarif__name",
+                    "client__ca_name",
+    )
+    # date_hierarchy = 'subscription_start'
+    autocomplete_fields = (
+        'client',
+    )
+
+
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)
 admin.site.register(GlobalLogging, GlobalLogAdmin)
@@ -1397,3 +1451,5 @@ admin.site.register(GroupObjectRetrans, GroupObjectRetransAdmin)
 admin.site.register(DevicesDiagnostics, DeviceDiagnosicAdmin)
 admin.site.register(OnecContracts, OnecContractsAdmin)
 admin.site.register(InfoServObj, InfoServObjAdmin)
+admin.site.register(InfoServTarifs, InfoServTarifsAdmin)
+admin.site.register(InfoServTarifClient, InfoServTarifClientAdmin)

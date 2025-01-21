@@ -41,6 +41,7 @@ class Contragents(models.Model):
     ca_uid_contragent = models.CharField(max_length=100, blank=True, null=True, db_comment='УникальныйИдентификаторКонтрагента')
     ca_name_contragent = models.CharField(max_length=255, blank=True, null=True, db_comment='НаименованиеКонтрагента')
     service_manager = models.CharField(max_length=100, blank=True, null=True, db_comment='Имя прикреплённого менеджера тех поддержки')
+    ok_desk_id = models.IntegerField(blank=True, null=True, db_comment='id в ОК деске')
 
     class Meta:
         managed = False
@@ -191,6 +192,7 @@ class CaObjects(models.Model):
     parent_id_sys = models.CharField(max_length=200, blank=True, null=True, db_comment='Id клиента в системе мониторинга')
     contragent = models.ForeignKey(Contragents, models.DO_NOTHING, blank=True, null=True)
     ca_uid = models.CharField(max_length=100, blank=True, null=True, db_comment='Уникальный id контрагента')
+    ok_desk_id = models.IntegerField(blank=True, null=True, db_comment='ID объекта в ОК-деске')
 
     class Meta:
         managed = False
@@ -427,6 +429,28 @@ class InfoServObj(models.Model):
         db_table_comment = 'Объекты с информационными сервисами'
 
 
+class InfoServTarifClient(models.Model):
+    tarif_client_id = models.AutoField(primary_key=True, db_comment='ИД отношений')
+    tarif = models.ForeignKey('InfoServTarifs', models.DO_NOTHING, db_comment='ID Тарифа')
+    client = models.ForeignKey(Contragents, models.DO_NOTHING, db_comment='ID Клиента')
+
+    class Meta:
+        managed = False
+        db_table = 'info_serv_tarif_client'
+        db_table_comment = 'Сопоставление ТАРИФ СЕРВИСОВ КЛИЕНТ'
+
+
+class InfoServTarifs(models.Model):
+    tarif_id = models.AutoField(primary_key=True, db_comment='ИД тарифов')
+    name = models.CharField(max_length=100, db_comment='Название тарифа')
+    price = models.IntegerField(db_comment='Цена тарифа')
+
+    class Meta:
+        managed = False
+        db_table = 'info_serv_tarifs'
+        db_table_comment = 'Таблица с ТАРИФАМИ СЕРВИСОВ'
+
+
 class InformationServices(models.Model):
     serv_id = models.AutoField(primary_key=True, db_comment='ID Сервиса')
     serv_name = models.CharField(unique=True, max_length=100, db_comment='Название сервиса')
@@ -436,6 +460,27 @@ class InformationServices(models.Model):
         managed = False
         db_table = 'information_services'
         db_table_comment = 'Таблица для информационных сервисов Клиентов'
+
+
+class InspectTerminals(models.Model):
+    inspect_id = models.AutoField(primary_key=True, db_comment='ID Инспекции')
+    type_term = models.CharField(max_length=50, blank=True, null=True, db_comment='Тип терминала')
+    imei = models.CharField(max_length=100, blank=True, null=True, db_comment='IMEIТерминала')
+    iccid = models.CharField(max_length=100, blank=True, null=True, db_comment='ICCID СИМкарты')
+    vehicleid = models.CharField(db_column='vehicleId', max_length=50, blank=True, null=True, db_comment='ID Как в СМ')  # Field name made lowercase.
+    vehicle_name = models.CharField(max_length=50, blank=True, null=True, db_comment='Имя Объекта')
+    client_name = models.CharField(max_length=400, blank=True, null=True, db_comment='Имя клиента как в 1С')
+    client_id = models.IntegerField(blank=True, null=True, db_comment='ИД клиента из клиентов БД')
+    iccid_in_db = models.IntegerField(blank=True, null=True, db_comment='Наличие Сим карты в нашей БД\r\n0-Клментская сим\r\n1-наша')
+    if_change_imei = models.IntegerField(blank=True, null=True, db_comment='Будет ли изменён IMEI у сим\r\n0-нет\r\n1-да')
+    old_sim_imei = models.CharField(max_length=100, blank=True, null=True, db_comment='Если не сходится IMEI в СИМ заносится сюда ')
+    inspect_date = models.DateTimeField(db_comment='Времяинспекции')
+    monitoring_system = models.ForeignKey('MonitoringSystem', models.DO_NOTHING, db_column='monitoring_system', blank=True, null=True, db_comment='Система Мониторинга')
+
+    class Meta:
+        managed = False
+        db_table = 'inspect_terminals'
+        db_table_comment = 'Таблица по обходу терминалов'
 
 
 class Invoicing(models.Model):
@@ -551,6 +596,56 @@ class ObjectVehicles(models.Model):
         managed = False
         db_table = 'object_vehicles'
         db_table_comment = 'Таблица для хранения информации об объектах-транспортных средствах'
+
+
+class OnecContacts(models.Model):
+    contact_id = models.AutoField(primary_key=True, db_comment='Идентификатор Контактов')
+    surname = models.CharField(max_length=50, blank=True, null=True, db_comment='Фамилия')
+    name = models.CharField(max_length=50, blank=True, null=True, db_comment='Имя')
+    patronymic = models.CharField(max_length=50, blank=True, null=True, db_comment='Отчество')
+    position = models.CharField(max_length=100, blank=True, null=True, db_comment='Должность')
+    phone = models.CharField(max_length=80, blank=True, null=True, db_comment='Телефон')
+    mobiletelephone = models.CharField(max_length=80, blank=True, null=True, db_comment='МобТелефон')
+    email = models.CharField(max_length=80, blank=True, null=True, db_comment='ЭлПочта')
+    unique_partner_identifier = models.CharField(max_length=200, blank=True, null=True, db_comment='УникальныйИдентификаторПартнера')
+    unique_contact_identifier = models.CharField(max_length=200, blank=True, null=True, db_comment='УникальныйИдентификаторКонтактногоЛица')
+    ok_desk_id = models.IntegerField(blank=True, null=True, db_comment='ИД в ОК ДЕСК')
+
+    class Meta:
+        managed = False
+        db_table = 'onec_contacts'
+        db_table_comment = 'Контакты'
+
+
+class OnecContracts(models.Model):
+    contract_id = models.AutoField(primary_key=True, db_comment='Внутренний ID контракта')
+    name_contract = models.CharField(max_length=100, blank=True, null=True, db_comment='НаименованиеДоговора')
+    contract_number = models.CharField(max_length=100, blank=True, null=True, db_comment='НомерДоговора')
+    contract_date = models.DateField(blank=True, null=True, db_comment='ДатаДоговора')
+    contract_status = models.CharField(max_length=50, blank=True, null=True, db_comment='Статус')
+    organization = models.CharField(max_length=200, blank=True, null=True, db_comment='Организация')
+    partner = models.CharField(max_length=1000, blank=True, null=True, db_comment='Партнер')
+    counterparty = models.CharField(max_length=1000, blank=True, null=True, db_comment='Контрагент')
+    contract_commencement_date = models.DateField(blank=True, null=True, db_comment='ДатаНачалаДействия')
+    contract_expiration_date = models.DateField(blank=True, null=True, db_comment='ДатаОкончанияДействия')
+    contract_purpose = models.CharField(max_length=200, blank=True, null=True, db_comment='Цель')
+    type_calculations = models.CharField(max_length=200, blank=True, null=True, db_comment='ВидРасчетов')
+    category = models.CharField(max_length=100, blank=True, null=True, db_comment='Категория')
+    manager = models.CharField(max_length=200, blank=True, null=True, db_comment='Менеджер')
+    subdivision = models.CharField(max_length=600, blank=True, null=True, db_comment='Подразделение')
+    contact_person = models.CharField(max_length=300, blank=True, null=True, db_comment='КонтактноеЛицо')
+    organization_bank_account = models.CharField(max_length=300, blank=True, null=True, db_comment='БанковскийСчетОрганизации')
+    counterparty_bank_account = models.CharField(max_length=300, blank=True, null=True, db_comment='БанковскийСчетКонтрагента')
+    detailed_calculations = models.CharField(max_length=200, blank=True, null=True, db_comment='ДетализацияРасчетов')
+    unique_partner_identifier = models.CharField(max_length=500, blank=True, null=True, db_comment='УникальныйИдентификаторПартнера')
+    unique_counterparty_identifier = models.CharField(max_length=500, blank=True, null=True, db_comment='УникальныйИдентификаторКонтрагента')
+    ok_desk_id = models.IntegerField(blank=True, null=True, db_comment='ID в ОК-деск')
+    unique_contract_identifier = models.CharField(max_length=200, db_comment='УникальныйИдентификаторДоговораКонтрагента')
+
+    class Meta:
+        managed = False
+        db_table = 'onec_contracts'
+        db_table_comment = 'Таблица с договорами из 1С'
 
 
 class SensorBrands(models.Model):

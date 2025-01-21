@@ -1519,11 +1519,45 @@ class InfoServObj(models.Model):
         managed = False
         db_table = 'info_serv_obj'
         db_table_comment = 'Объекты с информационными сервисами'
-        verbose_name = 'Отчёт'
-        verbose_name_plural = 'Отчёт'
+        verbose_name = 'Объект на сервисе'
+        verbose_name_plural = 'Объекты на сервисе'
 
     def __str__(self):
         return self.sys_id_obj
+
+
+class InfoServTarifClient(models.Model):
+    tarif_client_id = models.AutoField(primary_key=True, db_comment='ИД отношений')
+    tarif = models.ForeignKey('InfoServTarifs', models.DO_NOTHING, db_comment='ID Тарифа',verbose_name='Тариф')
+    client = models.ForeignKey(Contragents, models.DO_NOTHING, db_comment='ID Клиента',verbose_name='Клиент')
+    start_tarif = models.DateField(blank=False, null=False, db_comment='Начало тарифа', verbose_name='Дата начала тарифа')
+    end_tarif = models.DateField(blank=False, null=False, db_comment='Начало тарифа', verbose_name='Дата окончания тарифа')
+
+
+    class Meta:
+        managed = False
+        db_table = 'info_serv_tarif_client'
+        db_table_comment = 'Сопоставление ТАРИФ СЕРВИСОВ КЛИЕНТ'
+        verbose_name = 'Тариф по сервисам у КЛИЕНТА'
+        verbose_name_plural = 'Тарифы по сервисам у КЛИЕНТА'
+
+
+class InfoServTarifs(models.Model):
+    tarif_id = models.AutoField(primary_key=True, db_comment='ИД тарифов')
+    name = models.CharField(max_length=100, db_comment='Название тарифа',verbose_name='Название тарифа')
+    price = models.IntegerField(db_comment='Цена тарифа',verbose_name='Цена тарифа')
+    count = models.IntegerField(db_comment='Цена тарифа',verbose_name='Возможность подключения сервисов')
+
+
+    class Meta:
+        managed = False
+        db_table = 'info_serv_tarifs'
+        db_table_comment = 'Таблица с ТАРИФАМИ СЕРВИСОВ'
+        verbose_name = 'Тариф по сервисам'
+        verbose_name_plural = 'Тарифы по сервисам'
+
+    def __str__(self):
+        return self.name
 
 class InformationServices(models.Model):
     serv_id = models.AutoField(primary_key=True, db_comment='ID Сервиса')
@@ -1539,3 +1573,24 @@ class InformationServices(models.Model):
 
     def __str__(self):
         return self.serv_name
+
+
+class OnecContacts(models.Model):
+    contact_id = models.AutoField(primary_key=True, db_comment='Идентификатор Контактов')
+    surname = models.CharField(max_length=50, blank=True, null=True, db_comment='Фамилия', verbose_name='Название сервиса')
+    name = models.CharField(max_length=50, blank=True, null=True, db_comment='Имя', verbose_name='Имя')
+    patronymic = models.CharField(max_length=50, blank=True, null=True, db_comment='Отчество', verbose_name='Отчество')
+    position = models.CharField(max_length=100, blank=True, null=True, db_comment='Должность', verbose_name='Должность')
+    phone = models.CharField(max_length=80, blank=True, null=True, db_comment='Телефон', verbose_name='Телефон')
+    mobiletelephone = models.CharField(max_length=80, blank=True, null=True, db_comment='МобТелефон', verbose_name='МобТелефон')
+    email = models.CharField(max_length=80, blank=True, null=True, db_comment='ЭлПочта', verbose_name='ЭлПочта')
+    unique_partner_identifier = models.CharField(max_length=200, blank=True, null=True, db_comment='УникальныйИдентификаторПартнера')
+    unique_contact_identifier = models.CharField(max_length=200, blank=True, null=True, db_comment='УникальныйИдентификаторКонтактногоЛица')
+    ok_desk_id = models.IntegerField(blank=True, null=True, db_comment='ИД в ОК ДЕСК')
+
+    class Meta:
+        managed = False
+        db_table = 'onec_contacts'
+        db_table_comment = 'Контакты'
+        verbose_name = 'Контакт 1C'
+        verbose_name_plural = 'Контакты 1C'
