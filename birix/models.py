@@ -143,6 +143,8 @@ class Contragents(models.Model):
             verbose_name='Телефон',
             )
 
+    service_manager = models.CharField(max_length=100, blank=True, null=True, db_comment='Имя прикреплённого менеджера тех поддержки')
+
     class Meta:
         managed = False
         db_table = 'Contragents'
@@ -158,6 +160,7 @@ class LoginUsers(models.Model):
         inactive = 0, "Заблокирована"
         verified = 2, 'Подверждена и активирована'
         testing = 3, "Тестовая"
+        fake = 4, "Фейковая. Для учёта ТС"
 
     client_name = models.CharField(
             max_length=200, 

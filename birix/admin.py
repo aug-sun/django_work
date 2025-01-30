@@ -94,11 +94,15 @@ class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "contragent",
             "comment_field",
             "account_status",
+            "get_by_manager",
+            "get_it_manager",
             )
 
     list_filter = (
             "system",
             "date_create",
+            "contragent__service_manager",
+            "contragent__key_manager",
 
             )
     search_fields = (
@@ -190,10 +194,6 @@ class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
         return None
     
 
-
-
-
-
     def download_excel(self, request, queryset):
             workbook = openpyxl.Workbook()
             worksheet = workbook.active
@@ -226,6 +226,18 @@ class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
             return response
 
 
+    def get_by_manager(self, obj):
+        if obj.contragent_id != None:
+            by_manager = Contragents.objects.filter(ca_id=obj.contragent_id).first().key_manager
+            return by_manager
+
+    def get_it_manager(self, obj):
+        if obj.contragent_id != None:
+            by_manager = Contragents.objects.filter(ca_id=obj.contragent_id).first().service_manager
+            return by_manager
+
+    get_by_manager.short_description = 'Менеджер по продажам'
+    get_it_manager.short_description = 'ИТ специалист'
 
 class CaObjectsAdmin(LoginRequiredMixin,admin.ModelAdmin):
 
