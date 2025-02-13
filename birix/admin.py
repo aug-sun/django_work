@@ -94,11 +94,15 @@ class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "contragent",
             "comment_field",
             "account_status",
+            "get_by_manager",
+            "get_it_manager",
             )
 
     list_filter = (
             "system",
             "date_create",
+            "contragent__service_manager",
+            "contragent__key_manager",
 
             )
     search_fields = (
@@ -190,10 +194,6 @@ class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
         return None
     
 
-
-
-
-
     def download_excel(self, request, queryset):
             workbook = openpyxl.Workbook()
             worksheet = workbook.active
@@ -226,6 +226,18 @@ class LoginUsersAdmin(LoginRequiredMixin,admin.ModelAdmin):
             return response
 
 
+    def get_by_manager(self, obj):
+        if obj.contragent_id != None:
+            by_manager = Contragents.objects.filter(ca_id=obj.contragent_id).first().key_manager
+            return by_manager
+
+    def get_it_manager(self, obj):
+        if obj.contragent_id != None:
+            by_manager = Contragents.objects.filter(ca_id=obj.contragent_id).first().service_manager
+            return by_manager
+
+    get_by_manager.short_description = 'Менеджер по продажам'
+    get_it_manager.short_description = 'ИТ специалист'
 
 class CaObjectsAdmin(LoginRequiredMixin,admin.ModelAdmin):
 
@@ -367,6 +379,8 @@ class GlobalLogAdmin(LoginRequiredMixin,admin.ModelAdmin):
             "change_time",
             "sys_id",
             "action",
+            "new_value",
+            "old_value",
             )
     fieldsets = (
             (None, {
@@ -1376,6 +1390,58 @@ class InfoServObjAdmin(admin.ModelAdmin):
     )
 
 
+class InfoServTarifsAdmin(admin.ModelAdmin):
+    list_display = (
+            "name",
+            "price",
+            "count",
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    "name",
+                    "price",
+                    "count",
+                )
+            })
+    )
+
+
+class InfoServTarifClientAdmin(admin.ModelAdmin):
+    list_display = (
+            "tarif",
+            "client",
+            "start_tarif",
+            "end_tarif",
+            )
+    add_fieldsets = (
+            (None, {
+                'classes': ('wide',),
+                'fields': (
+                    "tarif",
+                    "client",
+                    "start_tarif",
+                    "end_tarif",
+                )
+            })
+    )
+
+    list_filter = (
+                    "tarif",
+                    "start_tarif",
+                    "end_tarif",
+            )
+    search_fields = (
+                    "tarif__name",
+                    "client__ca_name",
+    )
+    # date_hierarchy = 'subscription_start'
+    autocomplete_fields = (
+        'client',
+    )
+
+
 admin.site.register(Contragents, ContragentsAdmin)
 admin.site.register(LoginUsers, LoginUsersAdmin)
 admin.site.register(GlobalLogging, GlobalLogAdmin)
@@ -1397,3 +1463,5 @@ admin.site.register(GroupObjectRetrans, GroupObjectRetransAdmin)
 admin.site.register(DevicesDiagnostics, DeviceDiagnosicAdmin)
 admin.site.register(OnecContracts, OnecContractsAdmin)
 admin.site.register(InfoServObj, InfoServObjAdmin)
+admin.site.register(InfoServTarifs, InfoServTarifsAdmin)
+admin.site.register(InfoServTarifClient, InfoServTarifClientAdmin)
